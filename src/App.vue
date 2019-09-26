@@ -1,74 +1,85 @@
 <template>
     <div id="app">
-        <UnmatchedCharacterCard
-            :deckProperties="deck"
-        />
-        <div class="deck-properties no-print">
-            <div>
-                <input type="checkbox" id="printnplay" v-model="deck.isPNP">
-                <label for="printnplay">Print and play</label>
-                Change colour scheme to use less ink when printing
+        <div class="no-print">
+            <UnmatchedCharacterCard
+                :deckProperties="deck"
+            />
+            <div class="deck-properties no-print">
+                <div>
+                    <input type="checkbox" id="printnplay" v-model="deck.isPNP">
+                    <label for="printnplay">Print and play</label>
+                    Change colour scheme to use less ink when printing
+                </div>
+                <div v-if="deck.isPNP">
+                    <label>Border colour</label>
+                    <input v-model="deck.borderColour" type="color">
+                </div>
+                <div>
+                    <label>Deck name</label>
+                    <input v-model="deck.name" placeholder="">
+                </div>
+                <div>
+                    <label>Hero name</label>
+                    <input v-model="deck.heroName" placeholder="">
+                </div>
+                <div>
+                    <label>Hero attack type</label>
+                    <input type="radio" v-model="deck.heroIsRanged" :value="false">
+                    <label>
+                        Melee
+                    </label>
+                    <br>
+                    <input type="radio" v-model="deck.heroIsRanged" :value="true">
+                    <label>
+                        Ranged
+                    </label>
+                </div>
+                <div>
+                    <label>Hero HP</label>
+                    <input v-model.number="deck.heroHP" type="number" min="1">
+                </div>
+                <div>
+                    <label>Special Ability</label>
+                    <textarea v-model="deck.specialAbility"></textarea>
+                </div>
+                <div>
+                    <label>Movement</label>
+                    <input v-model.number="deck.moveValue" type="number" min="1">
+                </div>
+                <div>
+                    <label>Sidekick name</label>
+                    <input v-model="deck.sidekickName" placeholder="">
+                </div>
+                <div>
+                    <label>Sidekick attack type</label>
+                    <input type="radio" v-model="deck.sidekickIsRanged" :value="false">
+                    <label>
+                        Melee
+                    </label>
+                    <br>
+                    <input type="radio" v-model="deck.sidekickIsRanged" :value="true">
+                    <label>
+                        Ranged
+                    </label>
+                </div>
+                <div>
+                    <label>Sidekick HP</label>
+                    <input v-model.number="deck.sidekickHP" type="number" min="1">
+                </div>
             </div>
-            <div v-if="deck.isPNP">
-                <label>Border colour</label>
-                <input v-model="deck.borderColour" type="color">
-            </div>
-            <div>
-                <label>Deck name</label>
-                <input v-model="deck.name" placeholder="">
-            </div>
-            <div>
-                <label>Hero name</label>
-                <input v-model="deck.heroName" placeholder="">
-            </div>
-            <div>
-                <label>Hero attack type</label>
-                <input type="radio" v-model="deck.heroIsRanged" :value="false">
-                <label>
-                    Melee
-                </label>
-                <br>
-                <input type="radio" v-model="deck.heroIsRanged" :value="true">
-                <label>
-                    Ranged
-                </label>
-            </div>
-            <div>
-                <label>Hero HP</label>
-                <input v-model.number="deck.heroHP" type="number" min="1">
-            </div>
-            <div>
-                <label>Special Ability</label>
-                <textarea v-model="deck.specialAbility"></textarea>
-            </div>
-            <div>
-                <label>Movement</label>
-                <input v-model.number="deck.moveValue" type="number" min="1">
-            </div>
-            <div>
-                <label>Sidekick name</label>
-                <input v-model="deck.sidekickName" placeholder="">
-            </div>
-            <div>
-                <label>Sidekick attack type</label>
-                <input type="radio" v-model="deck.sidekickIsRanged" :value="false">
-                <label>
-                    Melee
-                </label>
-                <br>
-                <input type="radio" v-model="deck.sidekickIsRanged" :value="true">
-                <label>
-                    Ranged
-                </label>
-            </div>
-            <div>
-                <label>Sidekick HP</label>
-                <input v-model.number="deck.sidekickHP" type="number" min="1">
+            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck"/>
+            <div class="no-print">
+                <button @click="add">Add card</button>
             </div>
         </div>
-        <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck"/>
-        <div class="no-print">
-            <button @click="add">Add card</button>
+        <div>
+
+        </div>
+        <div class="print">
+            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck"/>
+            <UnmatchedCharacterCard
+                :deckProperties="deck"
+            />
         </div>
     </div>
 </template>
@@ -94,6 +105,7 @@ export default {
                 sidekickName: "",
                 sidekickIsRanged: false,
                 cards: [],
+                moveValue: "",
             },
         }
     },
@@ -133,9 +145,58 @@ export default {
 </script>
 
 <style lang="less">
+    @font-face {
+        font-family: BebasNeueRegular;
+        src: url("~@/assets/fonts/BebasNeueRegular-vm3oZ.otf");
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: League Gothic;
+        src: url("~@/assets/fonts/LeagueGothic-Regular.otf");
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: Archivo Narrow;
+        src: url("~@/assets/fonts/ArchivoNarrow-Regular.otf");
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: Archivo Narrow;
+        src: url("~@/assets/fonts/ArchivoNarrow-Bold.otf");
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: Archivo Narrow;
+        src: url("~@/assets/fonts/ArchivoNarrow-Italic.otf");
+        font-weight: normal;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: Archivo Narrow;
+        src: url("~@/assets/fonts/ArchivoNarrow-BoldItalic.otf");
+        font-weight: bold;
+        font-style: italic;
+    }
+
     * {
         box-sizing: border-box;
-        font-weight: normal;
+    }
+
+    @page {
+        size: landscape;
+    }
+
+    .print {
+        display: none;
     }
 
     @media print {
@@ -147,6 +208,20 @@ export default {
         .no-print {
             display: none !important;
         }
+
+        .print {
+            display: block !important;
+        }
+        .card {
+            float: left;
+            page-break-inside: avoid;
+        }
+    }
+
+    .card, .card * {
+        font-weight: normal;
+        font-family: BebasNeueRegular, sans-serif;
+        color-adjust: exact;
     }
 
     // @page {

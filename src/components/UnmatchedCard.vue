@@ -1,36 +1,40 @@
 <template>
-    <div class="outer" :class="[cardType, deckProperties.isPNP ? 'printnplay': '']" :style="userColours">
+    <div class="card outer" :class="[cardType, deckProperties.isPNP ? 'printnplay': '']" :style="userColours">
         <div class="main-wrapper">
-            <div class="inner-top" :style="backgroundImage">
-                <div class="upper-left-corner-wrapper">
-                    <div class="upper-left-outer inner-border">
-                        <div class="upper-left-icon">
-                            <h2 v-if="cardType !== 'scheme'" class="value">
-                                {{cardValue}}
-                            </h2>
-                        </div>
-                        <div class="upper-left-icon-triangle">
-                        </div>
-                        <div class="upper-left-character">
-                            <h2 class="character-name">
-                                {{characterName}}
-                            </h2>
-                        </div>
-                         <div class="upper-left-character-triangle">
-                        </div>
-                    </div>
-                    <div class="upper-left-outer-triangle inner-border">
-                    </div>
-                </div>
+            <div class="upper-left">
+                <svg width="100%" height="100%" viewBox="0 0 10.8 47">
+                    <polygon
+                        class="border"
+                        points="0,0 10.8,0 10.8,43.7 5,47 0,44.2"
+                    />
+                    <polygon
+                        class="name-panel"
+                        points="0,14.2 10,14.2 10,43.3 5,46.2 0,43.3"
+                    />
+                    <polygon
+                        class="canton"
+                        points="0,0 10,0 10,14.2 5,17.1 0,14.2"
+                    />
+                </svg>
             </div>
-            <div class="inner-between inner-border">
+            <div class="upper-left icon">
+                <h2 v-if="cardType !== 'scheme'" class="value">
+                    {{cardValue}}
+                </h2>
+            </div>
+            <div class="upper-left character">
+                <h2 class="character-name">
+                    {{characterName}}
+                </h2>
+            </div>
+            <div class="inner-top" :style="backgroundImage">
+            </div>
+            <div class="inner-bottom">
                 <div v-if="boostValue" class="boost-circle inner-border">
                     <div class="boost-value">
                         <h3>{{boostValue}}</h3>
                     </div>
                 </div>
-            </div>
-            <div class="inner-bottom">
                 <h3>{{cardTitle}}</h3>
                 <hr />
                 <div class="card-text">
@@ -137,22 +141,6 @@ export default {
 @upper-left-width: 10mm;
 @upper-left-outer-width: @upper-left-width + @border-width;
 
-@font-face {
-    font-family: BebasNeueRegular;
-    src: url("~@/assets/fonts/BebasNeueRegular-vm3oZ.otf");
-}
-
-@font-face {
-    font-family: League Gothic;
-    // src: url("~@/assets/fonts/accid___.ttf");
-    src: url("~@/assets/fonts/LeagueGothic-Regular.otf");
-}
-
-* {
-    font-family: BebasNeueRegular, sans-serif;
-    color-adjust: exact;
-}
-
 @media print {
   * {
     -webkit-transition: none !important;
@@ -161,56 +149,102 @@ export default {
   }
 }
 
+.upper-left {
+    position: absolute;
+    width: 10.8mm;
+    height: 47mm;
+
+    &.icon {
+        width: @upper-left-width;
+        height: 17.1mm;
+        text-align: center;
+
+        .value {
+            margin: 0;
+            padding-top: 7.5mm;
+            color: #FFF;
+            font-size:7.8mm;
+        }
+    }
+
+    &.character {
+        top: 17.1mm;
+        width: @upper-left-width;
+        height: 29.1mm;
+
+        .character-name {
+            white-space: nowrap;
+            color: #FFF;
+            padding: 0;
+            margin: 0;
+            transform: rotate(-90deg);
+            position: absolute;
+            transform-origin: right bottom;
+            text-align: right;
+            text-transform: uppercase;
+
+            font-size:6mm;
+
+            bottom: 26.5mm;
+            right: 1.1mm;
+        }
+    }
+
+    .border {
+        fill: var(--outer-border-colour);
+    }
+
+    .name-panel {
+        fill: #000;
+    }
+}
+
 .versatile {
-    .upper-left-icon{
-        background: @versatile-violet;
+    .canton {
+        fill: @versatile-violet;
+    }
+    .icon{
+        position: absolute;
         background-image: url("~@/assets/images/versatile.png");
         background-repeat: no-repeat;
         background-size: 6mm;
         background-position: 1.7mm 1.4mm;
     }
-    .upper-left-icon-triangle{
-        border-top-color: @versatile-violet;
-
-    }
 }
 
 .attack {
-    .upper-left-icon{
-        background: @attack-red;
+    .canton {
+        fill: @attack-red;
+    }
+    .icon{
         background-image: url("~@/assets/images/attack.png");
         background-repeat: no-repeat;
         background-size: 6.6mm;
         background-position: 1.7mm 1.4mm;
     }
-    .upper-left-icon-triangle{
-        border-top-color: @attack-red;
-    }
 }
 .scheme {
-    .upper-left-icon{
-        background: @scheme-yellow;
+    .canton {
+        fill: @scheme-yellow;
+    }
+    .icon{
         background-image: url("~@/assets/images/scheme.png");
         background-repeat: no-repeat;
         background-size: 3.9mm;
         background-position: center;
     }
-    .upper-left-icon-triangle{
-        border-top-color: @scheme-yellow;
-    }
 }
 .defence {
-    .upper-left-icon{
-        background: @defence-blue;
+    .canton {
+        fill: @defence-blue;
+    }
+    .icon{
         background-image: url("~@/assets/images/defence.png");
         background-repeat: no-repeat;
         background-size: 5.3mm;
         // background-position: 2.5mm 1.4mm;
         background-position-x: center;
         background-position-y: 1.4mm;
-    }
-    .upper-left-icon-triangle{
-        border-top-color: @defence-blue;
     }
 }
 
@@ -220,27 +254,28 @@ export default {
         background: var(--inner-border-colour);
     }
 
-    .upper-left-character {
-        background: #FFF;
+    .upper-left {
+        .border {
+            fill: var(--inner-border-colour);
+        }
+
+        .name-panel {
+            fill: #FFF;
+        }
+
         .character-name {
             color: #000;
         }
-    }
-
-    .upper-left-character-triangle {
-        border-top-color: #FFF;
     }
 
     // .inner-top {
     //     background: #FFF;
     // }
 
-    .inner-between {
-        .boost-circle {
-            background: #FFF;
-            .boost-value {
-                color: #000;
-            }
+    .boost-circle {
+        background: #FFF;
+        .boost-value {
+            color: #000;
         }
     }
 
@@ -271,54 +306,45 @@ export default {
 }
 
 .main-wrapper {
+    position: relative;
     overflow: hidden;
     border-radius: @corner;
 }
 
 .inner-top {
-    // width: 57mm;
-    // height: 82mm;
     height: 52.5mm;
     background: #FFF;
-    // border-radius: @corner @corner 0 0;
-    // padding: 5mm;
-    // border: 1px solid black;
 }
 
-.inner-between {
-    position: relative;
-    height: @border-width;
+.boost-circle {
+    position: absolute;
+    z-index: 1;
+    top: -4.5mm;
+    left: 48mm;
+    background: #000;
+    border-width: @border-width;
+    border-style: solid;
 
-    .boost-circle {
-        position: absolute;
-        z-index: 1;
-        top: -3.6mm;
-        left: 48mm;
-        background: #000;
-        border-width: @border-width;
-        border-style: solid;
+    width: 7.5mm;
+    height: 7.5mm;
+    border-radius: 100%;
+    text-align: center;
 
-        width: 7.5mm;
-        height: 7.5mm;
-        border-radius: 100%;
-        text-align: center;
-
-        .boost-value {
-            color: #FFF;
-            h3 {
-                margin: 0;
-            }
-            position: relative;
+    .boost-value {
+        color: #FFF;
+        h3 {
+            margin: 0;
         }
+        position: relative;
     }
 }
 
 .inner-bottom {
     position: relative;
     height: 28.8mm;
-    // border-radius: 0 0 @corner @corner;
 
-    overflow: hidden;
+    // overflow: hidden;
+    border-top: @border-width solid var(--inner-border-colour);
 
     padding: 2mm 3mm 1mm;
     background: #000;
@@ -328,14 +354,14 @@ export default {
     }
 
     hr {
-        border-style: solid;
-        margin: 0.5mm 0;
+        border-style: 0.3mm solid;
+        margin: 0mm 0 1mm;
     }
 
     .card-text, .card-text div {
         font-size: 3.3mm;
         line-height: 1.2em;
-        font-family: League Gothic, sans-serif;
+        font-family: Archivo Narrow, sans-serif;
 
         strong {
             font-size: 4mm;
@@ -371,94 +397,5 @@ export default {
     height: 42.9mm + @border-width;
     width: @upper-left-width + @border-width;
     // border-top-left-radius: @corner;
-}
-
-.upper-left-outer-triangle {
-    background: None;
-    top: 0;
-    margin-left: -@border-width;
-    margin-top: -0.2mm;
-
-    height: 0;
-    width: 0;
-    border-left: (@upper-left-outer-width + @border-width)/2 solid transparent;
-    border-right: (@upper-left-outer-width + @border-width)/2 solid transparent;
-
-    border-top: 3.4mm solid;
-    border-top-color: var(--inner-border-colour);
-}
-
-.upper-left-icon {
-    position: relative;
-    z-index: 2;
-    width: @upper-left-width;
-    height: 14mm;
-    // border-top-left-radius: @corner;
-    text-align: center;
-    overflow: visible;
-
-    .value {
-        margin: 0;
-        padding-top: 7mm;
-        color: #FFF;
-        font-size:7.8mm;
-    }
-}
-
-.upper-left-icon-triangle {
-    // top: 0;
-    // left: 0;
-    // height: 0;
-    // width: 0;
-    position: absolute;
-    top: 14mm;
-    z-index: 1;
-    margin-top: -0.2mm;
-    margin-left: -0.2mm;
-    border-left: @upper-left-width/2 + 0.15mm solid transparent;
-    border-right: @upper-left-width/2 + 0.15mm solid transparent;
-
-    border-top: 3.2mm solid;
-}
-
-.upper-left-character-triangle {
-    position:relative;
-    top: 0;
-    left: 0;
-    height: 0;
-    width: 0;
-    margin-top: -0.2mm;
-    margin-left: -0.2mm;
-    border-left: @upper-left-width/2 + 0.15mm solid transparent;
-    border-right: @upper-left-width/2 + 0.15mm solid transparent;
-
-    border-top: 3mm solid #000;
-
-
-}
-
-.upper-left-character {
-    background: #000;
-    height: 29mm;
-    width: 10mm;
-    position: relative;
-    overflow: hidden;
-
-    .character-name {
-        white-space: nowrap;
-        color: #FFF;
-        padding: 0;
-        margin: 0;
-        transform: rotate(-90deg);
-        position: absolute;
-        transform-origin: right bottom;
-        text-align: right;
-        text-transform: uppercase;
-
-        font-size:6mm;
-
-        bottom: 24mm;
-        right: 1.1mm;
-    }
 }
 </style>
