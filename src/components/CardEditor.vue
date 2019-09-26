@@ -31,27 +31,27 @@
             </div>
             <div v-if="card.type!=='scheme'">
                 <label>Card value</label>
-                <input v-model="card.value" placeholder="" type="number">
+                <input v-model.number="card.value" placeholder="" type="number" min="0">
             </div>
             <div>
                 <label>Playable by</label>
-                <input type="radio" v-model="wieldedBy" value="hero">
+                <input type="radio" v-model="card.wieldedBy" value="hero">
                 <label>
                     {{deck.heroName || 'Hero'}}
                 </label>
                 <br>
-                <input type="radio" v-model="wieldedBy" value="any">
+                <input type="radio" v-model="card.wieldedBy" value="any">
                 <label>
                     Any
                 </label>
                 <br>
-                <input type="radio" v-model="wieldedBy" value="sidekick">
+                <input type="radio" v-model="card.wieldedBy" value="sidekick">
                     <label>{{deck.sidekickName || 'Sidekick'}}
                 </label>
             </div>
             <div>
                 <label>Boost value</label>
-                <input v-model="card.boost" type="number">
+                <input v-model.number="card.boost" type="number" min="0">
             </div>
             <div v-if="card.type==='scheme'">
                 <label>Effect text</label>
@@ -71,7 +71,7 @@
             </div>
             <div>
                 <label>Number of copies in deck</label>
-                <input v-model="card.quantity" type="number">
+                <input v-model.number="card.quantity" type="number" min="1">
             </div>
             <div>
                 <label>Image URL</label>
@@ -99,18 +99,13 @@ export default {
             type: Object
         }
     },
-    data: function() {
-        return {
-            wieldedBy: "Any",
-        }
-    },
     computed: {
         card: {
                 get() { return this.value },
                 set(card) {this.$emit('input', card)}
         },
         characterName: function () {
-            switch (this.wieldedBy) {
+            switch (this.value.wieldedBy) {
                 case 'hero':
                     return this.deck.heroName || "Hero"
                 case 'sidekick':
@@ -126,6 +121,7 @@ export default {
 <style scoped lang="less">
 .card-editor {
     overflow: hidden;
+    float:left;
 }
 
 .float-left {

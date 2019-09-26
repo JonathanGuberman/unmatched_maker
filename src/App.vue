@@ -1,5 +1,8 @@
 <template>
     <div id="app">
+        <UnmatchedCharacterCard
+            :deckProperties="deck"
+        />
         <div class="deck-properties no-print">
             <div>
                 <input type="checkbox" id="printnplay" v-model="deck.isPNP">
@@ -19,11 +22,51 @@
                 <input v-model="deck.heroName" placeholder="">
             </div>
             <div>
+                <label>Hero attack type</label>
+                <input type="radio" v-model="deck.heroIsRanged" :value="false">
+                <label>
+                    Melee
+                </label>
+                <br>
+                <input type="radio" v-model="deck.heroIsRanged" :value="true">
+                <label>
+                    Ranged
+                </label>
+            </div>
+            <div>
+                <label>Hero HP</label>
+                <input v-model.number="deck.heroHP" type="number" min="1">
+            </div>
+            <div>
+                <label>Special Ability</label>
+                <textarea v-model="deck.specialAbility"></textarea>
+            </div>
+            <div>
+                <label>Movement</label>
+                <input v-model.number="deck.moveValue" type="number" min="1">
+            </div>
+            <div>
                 <label>Sidekick name</label>
                 <input v-model="deck.sidekickName" placeholder="">
             </div>
+            <div>
+                <label>Sidekick attack type</label>
+                <input type="radio" v-model="deck.sidekickIsRanged" :value="false">
+                <label>
+                    Melee
+                </label>
+                <br>
+                <input type="radio" v-model="deck.sidekickIsRanged" :value="true">
+                <label>
+                    Ranged
+                </label>
+            </div>
+            <div>
+                <label>Sidekick HP</label>
+                <input v-model.number="deck.sidekickHP" type="number" min="1">
+            </div>
         </div>
-        <CardEditor v-for="card in deck.cards" v-model="card.data" :deck="deck"/>
+        <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck"/>
         <div class="no-print">
             <button @click="add">Add card</button>
         </div>
@@ -32,11 +75,13 @@
 
 <script>
 import CardEditor from '@/components/CardEditor.vue'
+import UnmatchedCharacterCard from '@/components/UnmatchedCharacterCard.vue'
 
 export default {
     name: 'app',
     components: {
-        CardEditor
+        CardEditor,
+        UnmatchedCharacterCard
     },
     data: function () {
         return {
@@ -45,9 +90,24 @@ export default {
                 isPNP: true,
                 borderColour: "#E0EFF0",
                 heroName: "",
+                heroIsRanged: false,
                 sidekickName: "",
-                cards: []
+                sidekickIsRanged: false,
+                cards: [],
             },
+        }
+    },
+    computed: {
+        fullDeck: function() {
+            var fullDeck = [];
+            this.deck.cards.forEach(card => {
+                var quantity = parseInt(card.data.quantity) || 1;
+                quantity = quantity > 0 ? quantity : 1;
+                [...Array(quantity)].forEach(() => {
+                    fullDeck.push(card);
+                });
+            });
+            return fullDeck
         }
     },
     methods: {
@@ -63,7 +123,8 @@ export default {
                     duringText: "",
                     afterText: "",
                     imageUrl: '',
-                    quantity: 1
+                    quantity: 1,
+                    wieldedBy: 'any',
                 },
             })
         }
@@ -74,6 +135,7 @@ export default {
 <style lang="less">
     * {
         box-sizing: border-box;
+        font-weight: normal;
     }
 
     @media print {

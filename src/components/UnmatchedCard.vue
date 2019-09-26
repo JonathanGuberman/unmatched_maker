@@ -102,7 +102,7 @@ export default {
     computed: {
         userColours: function () {
             return {
-                'zoom': 2,
+                'zoom': 1,
                 // '-moz-transform-origin': 'left top',
                 // '-moz-transform': 'scale(2)',
                 '--inner-border-colour': this.deckProperties.isPNP ? this.deckProperties.borderColour : "#F7EADB",
@@ -160,21 +160,6 @@ export default {
     zoom: 1 !important;
   }
 }
-
-// .testsquare {
-//     height:100px;
-//     width: 100px;
-//     background: @versatile-violet;
-// }
-
-// .testtriangle {
-//     width: 100px;
-//     margin-top: -1px;
-//     border-left: 5px solid transparent;
-//     border-right: 5px solid transparent;
-
-//     border-top: 10px solid @versatile-violet;
-// }
 
 .versatile {
     .upper-left-icon{
