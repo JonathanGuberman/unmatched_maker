@@ -156,8 +156,16 @@
                                 {{sidekick.hp}}
                             </h2>
                         </div>
-                        <div class="circle" v-for="(item, index) in [...Array(sidekick.quantity)]" :key="index">
-
+                        <div v-else class="quantity">
+                            <div class="circle"
+                                v-for="(item, index) in [...Array(sidekick.quantity)]"
+                                :key="index"
+                                :style="{'margin-left': circleOffset(index)}"
+                            >
+                                <span v-if="index === sidekick.quantity -1">
+                                    X{{sidekick.quantity}}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,7 +208,7 @@ export default {
                 // '-moz-transform': 'scale(2)',
                 '--inner-border-colour': this.appearance.isPNP ? this.appearance.borderColour : "#F7EADB",
                 '--outer-border-colour': '#F7EADB',
-                '--highlight-color': this.appearance.highlightColour,
+                '--highlight-colour': this.appearance.highlightColour,
                 '--contrast-colour': this.isDarkText(this.appearance.highlightColour),
             }
         },
@@ -232,6 +240,21 @@ export default {
         }
     },
     methods: {
+        circleOffset: function(index) {
+            const circleSize = 5.5;
+            var offset;
+
+            if (this.sidekick.quantity === 2){
+                offset = index ? -circleSize/6 : -5*circleSize/6;
+            } else {
+                const farLeftOffset = -5.5;
+                const farRightOffset = 5.5 - circleSize;
+                const diff = farRightOffset - farLeftOffset;
+                offset = farLeftOffset + index/(this.sidekick.quantity - 1) * diff;
+            }
+
+            return offset + "mm"
+        },
         hexToRgb: function(hex) {
           // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
           var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -247,8 +270,8 @@ export default {
           } : null;
         },
         isDarkText: function(hex) {
-            const color = this.hexToRgb(hex);
-            const C = [color.r/255, color.g/255, color.b/255].map(component => {
+            const colour = this.hexToRgb(hex);
+            const C = [colour.r/255, colour.g/255, colour.b/255].map(component => {
                 if ( component <= 0.03928 ) {
                     return component/12.92
                 } else {
@@ -338,6 +361,11 @@ export default {
         .hp {
             color: #000;
         }
+        .circle {
+            border-color: #FFF;
+            background: #C0C0C0;
+            color: #000;
+        }
     }
 }
 
@@ -351,7 +379,7 @@ export default {
         border-top: @thick-border-width solid var(--inner-border-colour);
         border-bottom: @thick-border-width solid var(--inner-border-colour);
 
-        background: var(--highlight-color);
+        background: var(--highlight-colour);
         color: var(--contrast-colour);
 
         .section {
@@ -496,9 +524,8 @@ export default {
         position: absolute;
         bottom: 0;
 
-
         .home-plate {
-            fill: var(--highlight-color);
+            fill: var(--highlight-colour);
         }
 
         .indicator {
@@ -508,6 +535,27 @@ export default {
         .arc {
             stroke: var(--outer-border-colour);
         }
+    }
+
+    .quantity {
+        float: left;
+        position: relative;
+        width: 12.1mm;
+    }
+
+    .circle {
+        position: absolute;
+        width: 5.5mm;
+        height: 5.5mm;
+        left: 50%;
+        margin-left: -3mm;
+        border-radius: 100%;
+        border: @thin-border-width solid #000;
+        background: var(--highlight-colour);
+        text-align: center;
+        color: var(--contrast-colour);
+        font-size: 3mm;
+        padding-top: 0.75mm;
     }
 }
 
