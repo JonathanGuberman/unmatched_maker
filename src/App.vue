@@ -2,17 +2,23 @@
     <div id="app">
         <div class="no-print">
             <UnmatchedCharacterCard
-                :deckProperties="deck"
+                :hero="deck.hero"
+                :sidekick="deck.sidekick"
+                :appearance="deck.appearance"
             />
             <div class="deck-properties no-print">
                 <div>
-                    <input type="checkbox" id="printnplay" v-model="deck.isPNP">
+                    <input type="checkbox" id="printnplay" v-model="deck.appearance.isPNP">
                     <label for="printnplay">Print and play</label>
                     Change colour scheme to use less ink when printing
                 </div>
-                <div v-if="deck.isPNP">
+                <div v-if="deck.appearance.isPNP">
                     <label>Border colour</label>
-                    <input v-model="deck.borderColour" type="color">
+                    <input v-model="deck.appearance.borderColour" type="color">
+                </div>
+                <div v-if="!deck.appearance.isPNP">
+                    <label>Highlight colour</label>
+                    <input v-model="deck.appearance.highlightColour" type="color">
                 </div>
                 <div>
                     <label>Deck name</label>
@@ -20,54 +26,58 @@
                 </div>
                 <div>
                     <label>Hero name</label>
-                    <input v-model="deck.heroName" placeholder="">
+                    <input v-model="deck.hero.name" placeholder="">
                 </div>
                 <div>
                     <label>Hero attack type</label>
-                    <input type="radio" v-model="deck.heroIsRanged" :value="false">
+                    <input type="radio" v-model="deck.hero.isRanged" :value="false">
                     <label>
                         Melee
                     </label>
                     <br>
-                    <input type="radio" v-model="deck.heroIsRanged" :value="true">
+                    <input type="radio" v-model="deck.hero.isRanged" :value="true">
                     <label>
                         Ranged
                     </label>
                 </div>
                 <div>
                     <label>Hero HP</label>
-                    <input v-model.number="deck.heroHP" type="number" min="1">
+                    <input v-model.number="deck.hero.hp" type="number" min="1">
                 </div>
                 <div>
                     <label>Special Ability</label>
-                    <textarea v-model="deck.specialAbility"></textarea>
+                    <textarea v-model="deck.hero.specialAbility"></textarea>
                 </div>
                 <div>
                     <label>Movement</label>
-                    <input v-model.number="deck.moveValue" type="number" min="1">
+                    <input v-model.number="deck.hero.move" type="number" min="1">
                 </div>
                 <div>
                     <label>Sidekick name</label>
-                    <input v-model="deck.sidekickName" placeholder="">
+                    <input v-model="deck.sidekick.name" placeholder="">
                 </div>
                 <div>
                     <label>Sidekick attack type</label>
-                    <input type="radio" v-model="deck.sidekickIsRanged" :value="false">
+                    <input type="radio" v-model="deck.sidekick.isRanged" :value="false">
                     <label>
                         Melee
                     </label>
                     <br>
-                    <input type="radio" v-model="deck.sidekickIsRanged" :value="true">
+                    <input type="radio" v-model="deck.sidekick.isRanged" :value="true">
                     <label>
                         Ranged
                     </label>
                 </div>
                 <div>
                     <label>Sidekick HP</label>
-                    <input v-model.number="deck.sidekickHP" type="number" min="1">
+                    <input v-model.number="deck.sidekick.hp" type="number" min="1">
+                </div>
+                <div>
+                    <label>Number of sidekicks</label>
+                    <input v-model.number="deck.sidekick.quantity" type="number" min="0">
                 </div>
             </div>
-            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck"/>
+            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck" :key="card.id"/>
             <div class="no-print">
                 <button @click="add">Add card</button>
             </div>
@@ -76,9 +86,11 @@
 
         </div>
         <div class="print">
-            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck"/>
+            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck" :key="card.id"/>
             <UnmatchedCharacterCard
-                :deckProperties="deck"
+                :hero="deck.hero"
+                :sidekick="deck.sidekick"
+                :appearance="deck.appearance"
             />
         </div>
     </div>
@@ -98,14 +110,26 @@ export default {
         return {
             deck: {
                 name: "",
-                isPNP: true,
-                borderColour: "#E0EFF0",
-                heroName: "",
-                heroIsRanged: false,
-                sidekickName: "",
-                sidekickIsRanged: false,
+                appearance: {
+                    isPNP: false,
+                    borderColour: "#E0EFF0",
+                    highlightColour: "#F07838",
+                },
+                hero: {
+                    name: "Hero",
+                    isRanged: false,
+                    hp: 15,
+                    move: 2,
+                    specialAbility: "This is the character's special ability."
+                },
+                sidekick: {
+                    name: "Sidekick",
+                    isRanged: true,
+                    hp: 6,
+                    quantity: 1,
+                    quote: "I work best alone"
+                },
                 cards: [],
-                moveValue: "",
             },
         }
     },
@@ -113,10 +137,13 @@ export default {
         fullDeck: function() {
             var fullDeck = [];
             this.deck.cards.forEach(card => {
-                var quantity = parseInt(card.data.quantity) || 1;
+                var quantity = parseInt(card.quantity) || 1;
                 quantity = quantity > 0 ? quantity : 1;
-                [...Array(quantity)].forEach(() => {
-                    fullDeck.push(card);
+                [...Array(quantity)].forEach((_, index) => {
+                    fullDeck.push({
+                        data: card,
+                        id: index
+                    });
                 });
             });
             return fullDeck
@@ -124,8 +151,8 @@ export default {
     },
     methods: {
         add: function() {
-            this.deck.cards.push({
-                data: {
+            this.deck.cards.push(
+                {
                     title: "Card title",
                     type: "versatile",
                     value: 2,
@@ -137,8 +164,7 @@ export default {
                     imageUrl: '',
                     quantity: 1,
                     wieldedBy: 'any',
-                },
-            })
+                })
         }
     }
 }
@@ -223,8 +249,4 @@ export default {
         font-family: BebasNeueRegular, sans-serif;
         color-adjust: exact;
     }
-
-    // @page {
-    //   size: 63mm 88mm;
-    // }
 </style>

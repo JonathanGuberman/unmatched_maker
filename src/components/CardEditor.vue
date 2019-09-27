@@ -37,7 +37,7 @@
                 <label>Playable by</label>
                 <input type="radio" v-model="card.wieldedBy" value="hero">
                 <label>
-                    {{deck.heroName || 'Hero'}}
+                    {{deck.hero.name || 'Hero'}}
                 </label>
                 <br>
                 <input type="radio" v-model="card.wieldedBy" value="any">
@@ -46,7 +46,7 @@
                 </label>
                 <br>
                 <input type="radio" v-model="card.wieldedBy" value="sidekick">
-                    <label>{{deck.sidekickName || 'Sidekick'}}
+                    <label>{{deck.sidekick.name || 'Sidekick'}}
                 </label>
             </div>
             <div>
@@ -107,9 +107,9 @@ export default {
         characterName: function () {
             switch (this.value.wieldedBy) {
                 case 'hero':
-                    return this.deck.heroName || "Hero"
+                    return this.deck.hero.name || "Hero"
                 case 'sidekick':
-                    return this.deck.sidekickName || "Sidekick"
+                    return this.deck.sidekick.name || "Sidekick"
                 default:
                     return "Any"
             }

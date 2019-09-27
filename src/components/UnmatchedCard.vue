@@ -1,5 +1,5 @@
 <template>
-    <div class="card outer" :class="[cardType, deckProperties.isPNP ? 'printnplay': '']" :style="userColours">
+    <div class="card outer" :class="[cardType, deckProperties.appearance.isPNP ? 'printnplay': '']" :style="userColours">
         <div class="main-wrapper">
             <div class="upper-left">
                 <svg width="100%" height="100%" viewBox="0 0 10.8 47">
@@ -109,7 +109,7 @@ export default {
                 'zoom': 1,
                 // '-moz-transform-origin': 'left top',
                 // '-moz-transform': 'scale(2)',
-                '--inner-border-colour': this.deckProperties.isPNP ? this.deckProperties.borderColour : "#F7EADB",
+                '--inner-border-colour': this.deckProperties.appearance.isPNP ? this.deckProperties.appearance.borderColour : "#F7EADB",
                 '--outer-border-colour': '#F7EADB',
             }
         },

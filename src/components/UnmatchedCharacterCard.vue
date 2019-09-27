@@ -1,5 +1,5 @@
 <template>
-    <div class="card" :class="[deckProperties.isPNP ? 'printnplay': '']" :style="userColours">
+    <div class="card" :class="[appearance.isPNP ? 'printnplay': '']" :style="userColours">
         <div class="main-wrapper">
             <div class="hero panel">
                 <div class="name section">
@@ -7,7 +7,7 @@
                         <h1>Hero</h1>
                     </div>
                     <div class="content xl">
-                        {{deckProperties.heroName}}
+                        {{hero.name}}
                     </div>
                 </div>
                 <div class="attack-health section">
@@ -16,8 +16,8 @@
                             <h1>Attack</h1>
                         </div>
                         <div>
-                            <img v-if="deckProperties.heroIsRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
-                            <img v-else="deckProperties.heroIsRanged" class="melee icon" src="~@/assets/images/melee.svg">
+                            <img v-if="hero.isRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
+                            <img v-else class="melee icon" src="~@/assets/images/melee.svg">
                         </div>
                     </div>
                     <div class="health section">
@@ -27,6 +27,7 @@
                         <div>
                             <svg width="12.1mm" height="6.7mm" viewBox="0 0 12.1 6.7">
                                 <path
+                                    class="home-plate"
                                     d="
                                         M 3.45 0.8
                                         a 11.5 11.5 0 0 1 5.2 0
@@ -35,29 +36,28 @@
                                         l -2.6 -2
                                         l 0 -3.2"
                                     stroke="none"
-                                    fill="#C0C0C0"
                                 />
                                 <path
+                                    class="indicator"
                                     d="
                                         M 6.05 5.1
                                         l 0.7 -0.6
                                         l -1.4 0
                                         "
                                     stroke="none"
-                                    fill="#999"
+
                                 />
                                 <path
                                     class="arc"
                                     d="
                                         M 0 2.2
                                         a 11.5 11.5 0 0 1 12.1 0"
-                                    stroke="#999"
                                     stroke-width="0.2"
                                     fill="none"
                                 />
                             </svg>
                             <h2 class="hp">
-                                {{deckProperties.heroHP}}
+                                {{hero.hp}}
                             </h2>
                         </div>
                     </div>
@@ -70,48 +70,60 @@
                         <h1>Special abilities</h1>
                     </div>
                     <div class="content mixed-case">
-                        {{deckProperties.specialAbility}}
+                        {{hero.specialAbility}}
                     </div>
                 </div>
                 <div class="move section">
                     <div class="arrow">
-                        <img src="~@/assets/images/arrow.svg">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 670 12990" preserveAspectRatio="none">
+                            <g stroke="none">
+                                <path d="M177 12699 c-80 -139 -144 -256 -141 -261 3 -4 61 -8 130 -8 l124 0 0 -5935 0 -5935 -124 0 c-69 0 -127 -4 -130 -8 -3 -5 60 -122 141 -261 120 -208 148 -250 159 -239 22 22 291 493 287 500 -2 5 -62 8 -134 8 l-129 0 0 5935 0 5935 129 0 c72 0 132 3 134 8 4 7 -265 478 -287 500 -11 11 -39 -30 -159 -239z"/>
+                            </g>
+                        </svg>
                     </div>
                     <div class="value">
-                        {{deckProperties.moveValue}}
+                        {{hero.move}}
                     </div>
                     <div class="title">
-                        <img src="~@/assets/images/move.svg">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2790 12100" preserveAspectRatio="xMidYMid meet">
+                            <g stroke="none">
+                                <path d="M67 12003 c-4 -3 -7 -292 -7 -640 l0 -634 32 -14 c18 -7 299 -105 625 -217 325 -111 589 -206 585 -209 -4 -4 -279 -98 -612 -209 -333 -112 -611 -208 -618 -213 -9 -8 -12 -140 -10 -626 l3 -616 1325 0 1325 0 0 470 0 470 -698 5 -698 5 678 243 c373 134 688 250 701 258 22 14 22 15 22 293 0 211 -3 281 -12 288 -11 8 -294 108 -1208 427 l-185 65 691 0 c572 1 694 3 703 15 8 9 10 130 9 427 l-3 414 -1321 3 c-726 1 -1324 -1 -1327 -5z"/>
+                                <path d="M955 8235 c-129 -24 -199 -46 -300 -95 -298 -144 -506 -412 -602 -775 l-36 -140 0 -305 0 -305 36 -140 c117 -441 403 -745 802 -852 99 -27 104 -27 486 -31 429 -4 493 2 663 59 200 67 388 206 513 379 107 148 163 271 215 474 29 114 31 134 36 361 5 271 -2 343 -53 530 -40 145 -83 241 -162 360 -179 270 -426 430 -743 481 -115 19 -753 18 -855 -1z m838 -975 c138 -20 226 -85 264 -193 25 -71 25 -223 0 -293 -37 -107 -127 -175 -254 -194 -87 -12 -747 -13 -833 0 -179 26 -274 144 -273 340 1 196 94 314 268 339 84 12 746 13 828 1z"/>
+                                <path d="M67 5493 c-4 -3 -7 -230 -7 -503 0 -386 3 -500 13 -507 10 -8 1038 -343 1427 -466 l95 -30 -765 -256 -765 -256 -3 -434 c-1 -239 1 -438 6 -443 8 -8 2614 984 2640 1004 18 15 18 901 0 915 -14 11 -2612 983 -2626 983 -5 0 -12 -3 -15 -7z"/>
+                                <path d="M71 2336 c-8 -10 -10 -314 -9 -1132 l3 -1119 345 0 345 0 3 653 2 652 190 0 190 0 2 -427 3 -428 215 0 215 0 3 428 2 427 190 0 190 0 0 -644 c0 -532 2 -646 14 -655 9 -8 117 -11 377 -9 l364 3 3 1119 c1 818 -1 1122 -9 1132 -17 21 -2621 21 -2638 0z"/>
+                            </g>
+                        </svg>
                     </div>
                 </div>
             </div>
 
             <div class="sidekick panel">
-                <div v-if="deckProperties.sidekickName" class="name section">
+                <div v-if="sidekick.quantity" class="name section">
                     <div class="gutter">
                         <h1>Sidekick</h1>
                     </div>
                     <div class="content xl">
-                        {{deckProperties.sidekickName}}
+                        {{sidekick.name}}
                     </div>
                 </div>
                 <div class="attack-health section">
-                    <div v-if="deckProperties.sidekickName" class="attack section">
+                    <div v-if="sidekick.quantity" class="attack section">
                         <div class="gutter">
                             <h1>Attack</h1>
                         </div>
-                        <div v-if="deckProperties.sidekickName">
-                            <img v-if="deckProperties.sidekickIsRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
-                            <img v-else="deckProperties.sidekickIsRanged" class="melee icon" src="~@/assets/images/melee.svg">
+                        <div v-if="sidekick.quantity">
+                            <img v-if="sidekick.isRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
+                            <img v-else class="melee icon" src="~@/assets/images/melee.svg">
                         </div>
                     </div>
-                    <div v-if="deckProperties.sidekickName" class="health section">
+                    <div v-if="sidekick.quantity" class="health section">
                         <div class="gutter">
                             <h1>Start health</h1>
                         </div>
-                        <div v-if="deckProperties.sidekickName">
+                        <div v-if="sidekick.quantity===1">
                             <svg width="12.1mm" height="6.7mm" viewBox="0 0 12.1 6.7">
                                 <path
+                                    class="home-plate"
                                     d="
                                         M 3.45 0.8
                                         a 11.5 11.5 0 0 1 5.2 0
@@ -120,30 +132,32 @@
                                         l -2.6 -2
                                         l 0 -3.2"
                                     stroke="none"
-                                    fill="#C0C0C0"
                                 />
                                 <path
+                                    class="indicator"
                                     d="
                                         M 6.05 5.1
                                         l 0.7 -0.6
                                         l -1.4 0
                                         "
                                     stroke="none"
-                                    fill="#999"
+
                                 />
                                 <path
                                     class="arc"
                                     d="
                                         M 0 2.2
                                         a 11.5 11.5 0 0 1 12.1 0"
-                                    stroke="#999"
                                     stroke-width="0.2"
                                     fill="none"
                                 />
                             </svg>
                             <h2 class="hp">
-                                {{deckProperties.sidekickHP}}
+                                {{sidekick.hp}}
                             </h2>
+                        </div>
+                        <div class="circle" v-for="(item, index) in [...Array(sidekick.quantity)]" :key="index">
+
                         </div>
                     </div>
                 </div>
@@ -158,9 +172,18 @@ import Vue from 'vue';
 export default {
     name: 'UnmatchedCharacterCard',
     props: {
-        deckProperties: {
+        hero: {
             type: Object,
+            required: true
         },
+        sidekick: {
+            type: Object,
+            required: true
+        },
+        appearance: {
+            type: Object,
+            required: true
+        }
     },
     data: function () {
         return {
@@ -175,23 +198,27 @@ export default {
                 'zoom': 1,
                 // '-moz-transform-origin': 'left top',
                 // '-moz-transform': 'scale(2)',
-                '--inner-border-colour': this.deckProperties.isPNP ? this.deckProperties.borderColour : "#F7EADB",
+                '--inner-border-colour': this.appearance.isPNP ? this.appearance.borderColour : "#F7EADB",
                 '--outer-border-colour': '#F7EADB',
+                '--highlight-color': this.appearance.highlightColour,
+                '--contrast-colour': this.isDarkText(this.appearance.highlightColour),
             }
         },
     },
     mounted: function() {
-        const heroNameText = this.$el.querySelector('.hero .name .xl.content');
-        const computedStyle = window.getComputedStyle(heroNameText);
-        const paddingLeft = parseFloat(computedStyle.paddingLeft.replace('px',''));
-        const paddingRight = parseFloat(computedStyle.paddingRight.replace('px',''));
-        const width = parseFloat(computedStyle.width.replace('px',''));
+        this.$nextTick(function () {
+            const heroNameText = this.$el.querySelector('.hero .name .xl.content');
+            const computedStyle = window.getComputedStyle(heroNameText);
+            const paddingLeft = parseFloat(computedStyle.paddingLeft.replace('px',''));
+            const paddingRight = parseFloat(computedStyle.paddingRight.replace('px',''));
+            const width = parseFloat(computedStyle.width.replace('px',''));
 
-        // TODO Probably can use something better than scrollWidth; look into that
-        this.initialWidth = width - paddingLeft - paddingRight;
+            // TODO Probably can use something better than scrollWidth; look into that
+            this.initialWidth = width - paddingLeft - paddingRight;
+        });
     },
     watch: {
-        'deckProperties.heroName': function(x) {
+        'heroName': function() {
             Vue.nextTick(() => {
                 const heroNameText = this.$el.querySelector('.hero .name .xl.content');
                 const width = heroNameText.scrollWidth;
@@ -202,6 +229,34 @@ export default {
                     heroNameText.style['transform-origin'] = 'left bottom';
                 }
             });
+        }
+    },
+    methods: {
+        hexToRgb: function(hex) {
+          // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+          var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+          });
+
+          var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          } : null;
+        },
+        isDarkText: function(hex) {
+            const color = this.hexToRgb(hex);
+            const C = [color.r/255, color.g/255, color.b/255].map(component => {
+                if ( component <= 0.03928 ) {
+                    return component/12.92
+                } else {
+                    return Math.pow((component+0.055)/1.055, 2.4);
+                }
+            });
+            const L = 0.2126*C[0] + 0.7152*C[1] + 0.0722*C[2];
+            return (L > 0.179) ? 'black' : 'white'
         }
     }
 }
@@ -223,13 +278,6 @@ export default {
   }
 }
 
-.printnplay {
-    &.card {
-        border-radius: 0;
-        background: var(--inner-border-colour);
-    }
-}
-
 .inner-border {
     background: var(--inner-border-colour);
     border-color: var(--inner-border-colour);
@@ -249,15 +297,62 @@ export default {
     border-radius: @corner;
 }
 
+.printnplay {
+    &.card {
+        border-radius: 0;
+        background: var(--inner-border-colour);
+    }
+
+    .panel, .panel.abilities {
+        background: #FFF;
+
+        color: #000;
+    }
+
+    .gutter {
+        h1 {
+            color: #999;
+        }
+    }
+
+    .move {
+
+        svg, .title svg {
+            fill: #000;
+        }
+    }
+
+    .health {
+        .home-plate {
+            fill: #C0C0C0;
+        }
+
+        .indicator {
+            fill: #999;
+        }
+
+        .arc {
+            stroke: #999;
+        }
+
+        .hp {
+            color: #000;
+        }
+    }
+}
+
 .panel {
     height: 19.6mm;
-    background: #FFF;
+    background: #000;
+    color: #FFF;
 
     &.abilities {
         height: 40.4mm + 2*@thick-border-width;
-        background: #FFF;
         border-top: @thick-border-width solid var(--inner-border-colour);
         border-bottom: @thick-border-width solid var(--inner-border-colour);
+
+        background: var(--highlight-color);
+        color: var(--contrast-colour);
 
         .section {
             height: 100%;
@@ -307,7 +402,7 @@ export default {
     position: relative;
 
     h1 {
-        color: #999;
+        color: var(--inner-border-colour);
 
         bottom: 1mm;
         left : 3.4mm;
@@ -357,9 +452,11 @@ export default {
         height: 100%;
         left: -0.95mm;
 
-        img {
+        svg {
             height: 100%;
             transform: scaleY(0.95);
+            fill: var(--contrast-colour);
+
         }
     }
 
@@ -373,8 +470,11 @@ export default {
     .title {
         height: 19.2mm;
         padding-left: 2.5mm;
-        img {
+        svg {
             height: 100%;
+            fill: var(--contrast-colour);
+;
+
         }
     }
 }
@@ -395,6 +495,19 @@ export default {
     svg {
         position: absolute;
         bottom: 0;
+
+
+        .home-plate {
+            fill: var(--highlight-color);
+        }
+
+        .indicator {
+            fill: #FFF8;
+        }
+
+        .arc {
+            stroke: var(--outer-border-colour);
+        }
     }
 }
 
@@ -404,5 +517,6 @@ export default {
     font-size: 3.8mm;
     margin-top: 0.8mm;
     margin-right: 0.2mm;
+    color: var(--contrast-colour);
 }
 </style>
