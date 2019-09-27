@@ -1,10 +1,9 @@
 <template>
-    <div id="app">
-        <div class="no-print">
+    <div id="app" :style="userColours" >
+        <div class="no-print" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
             <UnmatchedCharacterCard
                 :hero="deck.hero"
                 :sidekick="deck.sidekick"
-                :appearance="deck.appearance"
             />
             <div class="deck-properties no-print">
                 <div>
@@ -90,7 +89,6 @@
             <UnmatchedCharacterCard
                 :hero="deck.hero"
                 :sidekick="deck.sidekick"
-                :appearance="deck.appearance"
             />
         </div>
     </div>
@@ -147,6 +145,14 @@ export default {
                 });
             });
             return fullDeck
+        },
+        userColours: function() {
+            return {
+                '--inner-border-colour': this.deck.appearance.isPNP ? this.deck.appearance.borderColour : "#F7EADB",
+                '--outer-border-colour': '#F7EADB',
+                '--highlight-colour': this.deck.appearance.highlightColour,
+                '--contrast-colour': this.isDarkText(this.deck.appearance.highlightColour),
+            }
         }
     },
     methods: {
@@ -165,6 +171,32 @@ export default {
                     quantity: 1,
                     wieldedBy: 'any',
                 })
+        },
+        hexToRgb: function(hex) {
+          // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+          var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+          });
+
+          var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          } : null;
+        },
+        isDarkText: function(hex) {
+            const colour = this.hexToRgb(hex);
+            const C = [colour.r/255, colour.g/255, colour.b/255].map(component => {
+                if ( component <= 0.03928 ) {
+                    return component/12.92
+                } else {
+                    return Math.pow((component+0.055)/1.055, 2.4);
+                }
+            });
+            const L = 0.2126*C[0] + 0.7152*C[1] + 0.0722*C[2];
+            return (L > 0.179) ? 'black' : 'white'
         }
     }
 }

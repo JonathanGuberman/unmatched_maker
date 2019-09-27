@@ -1,5 +1,5 @@
 <template>
-    <div class="card outer" :class="[cardType, deckProperties.appearance.isPNP ? 'printnplay': '']" :style="userColours">
+    <div class="card outer" :class="[cardType]">
         <div class="main-wrapper">
             <div class="upper-left">
                 <svg width="100%" height="100%" viewBox="0 0 10.8 47">
@@ -104,15 +104,6 @@ export default {
         },
     },
     computed: {
-        userColours: function () {
-            return {
-                'zoom': 1,
-                // '-moz-transform-origin': 'left top',
-                // '-moz-transform': 'scale(2)',
-                '--inner-border-colour': this.deckProperties.appearance.isPNP ? this.deckProperties.appearance.borderColour : "#F7EADB",
-                '--outer-border-colour': '#F7EADB',
-            }
-        },
         backgroundImage: function () {
             if (this.imageUrl) {
                 return {
@@ -249,7 +240,7 @@ export default {
 }
 
 .printnplay {
-    &.outer {
+    .outer {
         border-radius: 0;
         background: var(--inner-border-colour);
     }

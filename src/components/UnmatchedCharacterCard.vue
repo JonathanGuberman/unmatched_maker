@@ -1,5 +1,5 @@
 <template>
-    <div class="card" :class="[appearance.isPNP ? 'printnplay': '']" :style="userColours">
+    <div class="card"  >
         <div class="main-wrapper">
             <div class="hero panel">
                 <div class="name section">
@@ -187,10 +187,6 @@ export default {
         sidekick: {
             type: Object,
             required: true
-        },
-        appearance: {
-            type: Object,
-            required: true
         }
     },
     data: function () {
@@ -201,17 +197,6 @@ export default {
         }
     },
     computed: {
-        userColours: function() {
-            return {
-                'zoom': 1,
-                // '-moz-transform-origin': 'left top',
-                // '-moz-transform': 'scale(2)',
-                '--inner-border-colour': this.appearance.isPNP ? this.appearance.borderColour : "#F7EADB",
-                '--outer-border-colour': '#F7EADB',
-                '--highlight-colour': this.appearance.highlightColour,
-                '--contrast-colour': this.isDarkText(this.appearance.highlightColour),
-            }
-        },
     },
     mounted: function() {
         this.$nextTick(function () {
@@ -255,32 +240,6 @@ export default {
 
             return offset + "mm"
         },
-        hexToRgb: function(hex) {
-          // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-          var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-            return r + r + g + g + b + b;
-          });
-
-          var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-          return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-          } : null;
-        },
-        isDarkText: function(hex) {
-            const colour = this.hexToRgb(hex);
-            const C = [colour.r/255, colour.g/255, colour.b/255].map(component => {
-                if ( component <= 0.03928 ) {
-                    return component/12.92
-                } else {
-                    return Math.pow((component+0.055)/1.055, 2.4);
-                }
-            });
-            const L = 0.2126*C[0] + 0.7152*C[1] + 0.0722*C[2];
-            return (L > 0.179) ? 'black' : 'white'
-        }
     }
 }
 </script>
@@ -321,7 +280,7 @@ export default {
 }
 
 .printnplay {
-    &.card {
+    .card {
         border-radius: 0;
         background: var(--inner-border-colour);
     }
