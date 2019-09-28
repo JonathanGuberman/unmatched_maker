@@ -76,7 +76,24 @@
                     <input v-model.number="deck.sidekick.quantity" type="number" min="0">
                 </div>
             </div>
-            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck" :key="card.id"/>
+            <!--<CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck" :key="card.id"/>-->
+            <UnmatchedCard v-for="card in fullDeck"
+                :isEditable="true"
+                :deckProperties="deck"
+                :cardType.sync="card.data.type"
+                :cardValue.sync="card.data.value"
+                :cardTitle.sync="card.data.title"
+                :characterName.sync="card.data.characterName"
+                :boostValue.sync="card.data.boost"
+                :basicText.sync="card.data.basicText"
+                :immediateText.sync="card.data.immediateText"
+                :duringText.sync="card.data.duringText"
+                :afterText.sync="card.data.afterText"
+                :imageUrl.sync="card.data.imageUrl"
+                :cardQuantity.sync="card.data.quantity"
+                :key="card.id"
+                class="float-left"
+            />
             <div class="no-print">
                 <button @click="add">Add card</button>
             </div>
@@ -85,7 +102,23 @@
 
         </div>
         <div class="print">
-            <CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck" :key="card.id"/>
+            <UnmatchedCard v-for="card in fullDeck"
+                :deckProperties="deck"
+                :cardType="card.data.type"
+                :cardValue="card.data.value"
+                :cardTitle="card.data.title"
+                characterName="Any"
+                :boostValue="card.data.boost"
+                :basicText="card.data.basicText"
+                :immediateText="card.data.immediateText"
+                :duringText="card.data.duringText"
+                :afterText="card.data.afterText"
+                :imageUrl="card.data.imageUrl"
+                :cardQuantity="card.data.quantity"
+                :key="card.id"
+                :isEditable="false"
+                class="float-left"
+            />
             <UnmatchedCharacterCard
                 :hero="deck.hero"
                 :sidekick="deck.sidekick"
@@ -95,13 +128,13 @@
 </template>
 
 <script>
-import CardEditor from '@/components/CardEditor.vue'
+import UnmatchedCard from '@/components/UnmatchedCard.vue'
 import UnmatchedCharacterCard from '@/components/UnmatchedCharacterCard.vue'
 
 export default {
     name: 'app',
     components: {
-        CardEditor,
+        UnmatchedCard,
         UnmatchedCharacterCard
     },
     data: function () {
@@ -161,6 +194,7 @@ export default {
                 {
                     title: "Card title",
                     type: "versatile",
+                    characterName: "Any",
                     value: 2,
                     boost: 1,
                     basicText: "",
@@ -272,8 +306,14 @@ export default {
         }
         .card {
             float: left;
+            margin: 0;
             page-break-inside: avoid;
         }
+    }
+
+    .card {
+        float: left;
+        margin: 50px;
     }
 
     .card, .card * {

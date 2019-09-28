@@ -1,6 +1,15 @@
 <template>
-    <div class="card outer" :class="[cardType]">
+    <div class="card outer" :class="[cardType, isEditable ? 'editable':'']">
         <div class="main-wrapper">
+            <div class="inner-top" :style="backgroundImage">
+                <input
+                    v-if="isEditable"
+                    type="text"
+                    placeholder="Image URL"
+                    :value="imageUrl"
+                    @input="$emit('update:imageUrl', $event.target.value)"
+                />
+            </div>
             <div class="upper-left">
                 <svg width="100%" height="100%" viewBox="0 0 10.8 47">
                     <polygon
@@ -18,41 +27,101 @@
                 </svg>
             </div>
             <div class="upper-left icon">
+                <div v-if="isEditable" class="editor" @click="updateCardType">
+                </div>
                 <h2 v-if="cardType !== 'scheme'" class="value">
                     {{cardValue}}
+                    <EditorUpDownButtons
+                        v-if="isEditable"
+                        class="editor"
+                        :value="cardValue"
+                        @input="$emit('update:cardValue', $event)"
+                        :minValue="0"
+                    />
                 </h2>
             </div>
             <div class="upper-left character">
-                <h2 class="character-name">
-                    {{characterName}}
+                <h2 class="character-name"
+                    v-text="characterName"
+                    :contenteditable="isEditable"
+                    @blur="updateEditableText('characterName', $event)"
+                    @keypress.13="$event.preventDefault(); $event.target.blur()"
+                    style="min-width: 100%; min-height: 6mm;"
+                >
                 </h2>
             </div>
-            <div class="inner-top" :style="backgroundImage">
-            </div>
             <div class="inner-bottom">
-                <div v-if="boostValue" class="boost-circle inner-border">
+                <div class="boost-circle inner-border" :class="{'invisible': boostValue === 0}">
                     <div class="boost-value">
-                        <h3>{{boostValue}}</h3>
+                        <h3>
+                            {{boostValue}}
+                            <EditorUpDownButtons
+                                v-if="isEditable"
+                                class="editor"
+                                :minValue="0"
+                                :value="boostValue"
+                                @input="$emit('update:boostValue', $event)"
+                            />
+                        </h3>
                     </div>
                 </div>
-                <h3>{{cardTitle}}</h3>
+                <h3
+                    v-text="cardTitle"
+                    :contenteditable="isEditable"
+                    @blur="updateEditableText('cardTitle', $event)"
+                    @keypress.13="$event.preventDefault(); $event.target.blur()"
+                    style="min-height: 1.17em;"
+                >
+
+                </h3>
                 <hr />
                 <div class="card-text">
-                    <div v-if="cardType === 'scheme'">
-                        {{basicText}}
+                    <div v-if="cardType === 'scheme'"
+                        v-text="basicText"
+                        :contenteditable="isEditable"
+                        @blur="updateEditableText('basicText', $event)"
+                        style="min-height: 100%;"
+                    >
                     </div>
-                    <div v-if="immediateText && cardType !== 'scheme'">
-                        <strong>Immediately:</strong>{{immediateText}}
-                    </div>
-                    <div v-if="duringText && cardType !== 'scheme'">
-                        <strong>During combat:</strong>{{duringText}}
-                    </div>
-                    <div v-if="afterText && cardType !== 'scheme'">
-                        <strong>After combat:</strong>{{afterText}}
+                    <div v-else>
+                        <div :class="{'empty': !immediateText}" @click="focusEditableText">
+                            <strong>Immediately:</strong>
+                            <span
+                                v-text="immediateText"
+                                :contenteditable="isEditable"
+                                @blur="updateEditableText('immediateText', $event)"
+                            ></span>
+                        </div>
+                        <div :class="{'empty': !duringText}" @click="focusEditableText">
+                            <strong>During combat:</strong>
+                            <span
+                                v-text="duringText"
+                                :contenteditable="isEditable"
+                                @blur="updateEditableText('duringText', $event)"
+                            ></span>
+                        </div>
+                        <div :class="{'empty': !afterText}" @click="focusEditableText">
+                            <strong>After combat:</strong>
+                            <span
+                                v-text="afterText"
+                                :contenteditable="isEditable"
+                                @blur="updateEditableText('afterText', $event)"
+                            ></span>
+                        </div>
                     </div>
                 </div>
                 <div class="bottom-right">
-                    <span class="deck-name">{{deckProperties.name}}</span><span class="card-quantity">x{{cardQuantity}}</span>
+                    <span class="deck-name">{{deckProperties.name || deckProperties.hero.name}}</span>
+                    <span class="card-quantity">
+                        x{{cardQuantity}}
+                        <EditorUpDownButtons
+                            v-if="isEditable"
+                            class="editor"
+                            :value="cardQuantity"
+                            @input="$emit('update:cardQuantity', $event)"
+                            :minValue="1"
+                        />
+                    </span>
                 </div>
             </div>
         </div>
@@ -60,13 +129,19 @@
 </template>
 
 <script>
+import EditorUpDownButtons from '@/components/EditorUpDownButtons.vue'
+
 export default {
     name: 'UnmatchedCard',
+    components: {
+        EditorUpDownButtons
+    },
     props: {
         deckProperties: {
             type: Object,
         },
         cardType: {
+            type: String,
             default: "versatile"
         },
         cardValue: {
@@ -102,6 +177,10 @@ export default {
         imageUrl: {
             default: ''
         },
+        isEditable: {
+            type: Boolean,
+            default: false
+        }
     },
     computed: {
         backgroundImage: function () {
@@ -115,6 +194,27 @@ export default {
             return {}
         }
     },
+    methods: {
+        updateCardType: function () {
+            var newType = 'versatile';
+            if (this.cardType === 'versatile') {
+                newType = 'attack';
+            } else if (this.cardType === 'attack') {
+                newType = 'defence';
+            } else if (this.cardType === 'defence') {
+                newType = 'scheme';
+            }
+
+            this.$emit('update:cardType', newType);
+        },
+        updateEditableText: function (prop, event) {
+            const newTitle = event.target.innerText;
+            this.$emit('update:' + prop, newTitle);
+        },
+        focusEditableText: function(event) {
+            event.currentTarget.lastChild.focus();
+        }
+    }
 }
 </script>
 
@@ -140,19 +240,152 @@ export default {
   }
 }
 
+.editable {
+    &:hover {
+        // .editor {
+        //     visibility: visible;
+        //     opacity: 0.5;
+        // }
+
+        .invisible {
+            opacity: 1;
+        }
+    }
+
+    .inner-top {
+        input {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            font-family: initial;
+            visibility: hidden;
+        }
+
+        &:hover input {
+            visibility: visible;
+        }
+    }
+
+    .icon {
+        cursor: pointer;
+    }
+
+    /deep/ .editor {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    /deep/ .invalid {
+        visibility: hidden;
+    }
+
+    /deep/ button {
+        width: auto;
+        height: auto;
+        border: none;
+        background: none;
+        padding: 0;
+        border-radius: 50%;
+        text-align: center;
+        display: block;
+        float: right;
+        clear: right;
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+        }
+
+        .far, .fad, .fal, .fas {
+            background: #FFF;
+            color: #000;
+        }
+    }
+
+    /deep/ .value {
+        position: relative;
+        .editor {
+            left: 68%;
+            top: -1.1mm;
+            width: auto;
+            visibility: hidden;
+        }
+
+        &:hover .editor {
+            visibility: visible;
+        }
+    }
+
+    /deep/ .boost-value {
+        position: relative;
+        .editor {
+            top: -2.1mm;
+            left: 68%;
+            width: auto;
+            height: auto;
+            visibility: hidden;
+            opacity: 1;
+        }
+
+        &:hover .editor {
+            visibility: visible;
+        }
+    }
+
+    /deep/ .card-quantity {
+        .editor {
+            width: auto;
+            height: auto;
+            visibility: hidden;
+            opacity: 1;
+            top: -4mm;
+            left: 1mm;
+        }
+
+        // &:hover {
+        //     transform: scale(2);
+        // }
+
+        &:hover .editor {
+            visibility: visible;
+        }
+    }
+
+    .invisible:hover {
+        opacity: 1;
+    }
+
+    .card-text:hover, .card-text:focus-within {
+        .empty {
+            display: block;
+        }
+    }
+}
+
+.invisible {
+    opacity: 0;
+}
+
 .upper-left {
     position: absolute;
     width: 10.8mm;
     height: 47mm;
+    border-top-left-radius: @corner;
+    overflow: hidden;
 
     &.icon {
         width: @upper-left-width;
+        // border-top-left-radius: @corner;
+
         height: 17.1mm;
         text-align: center;
+        overflow: visible;
 
         .value {
-            margin: 0;
-            padding-top: 7.5mm;
+            margin: 7.5mm 0 0;
             color: #FFF;
             font-size:7.8mm;
         }
@@ -222,7 +455,7 @@ export default {
         background-image: url("~@/assets/images/scheme.png");
         background-repeat: no-repeat;
         background-size: 3.9mm;
-        background-position: center;
+        background-position: center 2mm;
     }
 }
 .defence {
@@ -298,13 +531,20 @@ export default {
 
 .main-wrapper {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border-radius: @corner;
 }
 
 .inner-top {
-    height: 52.5mm;
+    // height: 52.5mm;
+    position: relative;
+    flex: 1;
     background: #FFF;
+    border-top-left-radius: @corner;
+    border-top-right-radius: @corner;
 }
 
 .boost-circle {
@@ -323,6 +563,8 @@ export default {
 
     .boost-value {
         color: #FFF;
+        padding-top: 0.1mm;
+
         h3 {
             margin: 0;
         }
@@ -331,11 +573,16 @@ export default {
 }
 
 .inner-bottom {
+    display: flex;
+    flex-direction: column;
     position: relative;
     height: 28.8mm;
 
     // overflow: hidden;
     border-top: @border-width solid var(--inner-border-colour);
+    border-bottom-left-radius: @corner;
+    border-bottom-right-radius: @corner;
+
 
     padding: 2mm 3mm 1mm;
     background: #000;
@@ -349,14 +596,22 @@ export default {
         margin: 0mm 0 1mm;
     }
 
-    .card-text, .card-text div {
-        font-size: 3.3mm;
-        line-height: 1.2em;
-        font-family: Archivo Narrow, sans-serif;
+    .card-text {
+        flex: 1;
+        overflow: scroll;
 
-        strong {
-            font-size: 4mm;
-            margin-right: 1mm;
+        .empty {
+            display: none;
+        }
+        div, span {
+            font-size: 3.3mm;
+            line-height: 1.2em;
+            font-family: Archivo Narrow, sans-serif;
+
+            strong {
+                font-size: 4mm;
+                margin-right: 1mm;
+            }
         }
     }
 
@@ -368,6 +623,7 @@ export default {
         right:-1mm;
 
         .card-quantity {
+            position: relative;
             font-family: League Gothic, sans-serif;
             border-left: 0.2mm solid #FFF;
             padding-left: 0.5mm;

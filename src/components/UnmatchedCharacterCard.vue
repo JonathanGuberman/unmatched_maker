@@ -175,8 +175,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-
 export default {
     name: 'UnmatchedCharacterCard',
     props: {
@@ -211,8 +209,8 @@ export default {
         });
     },
     watch: {
-        'heroName': function() {
-            Vue.nextTick(() => {
+        'hero.name': function() {
+            this.$nextTick(() => {
                 const heroNameText = this.$el.querySelector('.hero .name .xl.content');
                 const width = heroNameText.scrollWidth;
 
