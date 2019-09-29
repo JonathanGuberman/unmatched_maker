@@ -1,5 +1,5 @@
 <template>
-    <div class="card" :class="[isEditable ? 'editable':'']">
+    <div class="unmatched-card" :class="[isEditable ? 'editable':'']">
         <div class="main-wrapper">
             <div class="hero panel">
                 <div class="name section">
@@ -491,25 +491,11 @@ export default {
     border-color: var(--inner-border-colour);
 }
 
-.card {
-    width: 63mm;
-    height: 88mm;
-    background: var(--outer-border-colour);
-    padding: 3mm;
-
-    border-radius: 2.5mm;
-}
-
 .main-wrapper {
     border-radius: @corner;
 }
 
 .printnplay {
-    .card {
-        border-radius: 0;
-        background: var(--inner-border-colour);
-    }
-
     .panel, .panel.abilities {
         background: #FFF;
 
@@ -523,7 +509,6 @@ export default {
     }
 
     .move {
-
         svg, .title svg {
             fill: #000;
         }

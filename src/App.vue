@@ -1,6 +1,6 @@
 <template>
-    <div id="app" :style="userColours" >
-        <div class="no-print" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
+    <div id="app" :style="userColours" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
+        <div class="no-print">
             <UnmatchedCharacterCard
                 :isEditable="true"
                 :heroName.sync="deck.hero.name"
@@ -63,6 +63,18 @@
 
         </div>
         <div class="print">
+            <UnmatchedCharacterCard
+                :heroName="deck.hero.name"
+                :heroIsRanged="deck.hero.isRanged"
+                :heroHp="deck.hero.hp"
+                :heroMove="deck.hero.move"
+                :heroSpecialAbility="deck.hero.specialAbility"
+                :sidekickName="deck.sidekick.name"
+                :sidekickIsRanged="deck.sidekick.isRanged"
+                :sidekickHp="deck.sidekick.hp"
+                :sidekickQuantity="deck.sidekick.quantity"
+                :sidekickQuote="deck.sidekick.quote"
+            />
             <UnmatchedCard v-for="card in fullDeck"
                 :deckProperties="deck"
                 :cardType="card.data.type"
@@ -79,10 +91,6 @@
                 :key="card.id"
                 :isEditable="false"
                 class="float-left"
-            />
-            <UnmatchedCharacterCard
-                :hero="deck.hero"
-                :sidekick="deck.sidekick"
             />
         </div>
     </div>
@@ -248,6 +256,13 @@ export default {
         size: landscape;
     }
 
+    .printnplay {
+        .unmatched-card {
+            border-radius: 0;
+            background: var(--inner-border-colour);
+        }
+    }
+
     .print {
         display: none;
     }
@@ -264,20 +279,30 @@ export default {
 
         .print {
             display: block !important;
-        }
-        .card {
-            float: left;
-            margin: 0;
-            page-break-inside: avoid;
+
+            .unmatched-card {
+                float: left;
+                margin: 0;
+                page-break-inside: avoid;
+            }
         }
     }
 
-    .card {
+    .unmatched-card {
         float: left;
         margin: 50px;
     }
 
-    .card, .card * {
+    .unmatched-card {
+        width: 63mm;
+        height: 88mm;
+        background: var(--outer-border-colour);
+        padding: 3mm;
+
+        border-radius: 2.5mm;
+    }
+
+    .unmatched-card, .unmatched-card * {
         font-weight: normal;
         font-family: BebasNeueRegular, sans-serif;
         color-adjust: exact;

@@ -1,5 +1,5 @@
 <template>
-    <div class="card outer" :class="[cardType, isEditable ? 'editable':'']">
+    <div class="unmatched-card" :class="[cardType, isEditable ? 'editable':'']">
         <div class="main-wrapper">
             <div class="inner-top" :style="backgroundImage">
                 <input
@@ -29,7 +29,7 @@
             <div class="upper-left icon">
                 <div v-if="isEditable" class="editor" @click="updateCardType">
                 </div>
-                <h2 v-if="cardType !== 'scheme'" class="value">
+                <div v-if="cardType !== 'scheme'" class="value">
                     {{cardValue}}
                     <EditorUpDownButtons
                         v-if="isEditable"
@@ -38,34 +38,33 @@
                         @input="$emit('update:cardValue', $event)"
                         :minValue="0"
                     />
-                </h2>
+                </div>
             </div>
             <div class="upper-left character">
-                <h2 class="character-name"
+                <div class="character-name"
                     v-text="characterName"
                     :contenteditable="isEditable"
                     @blur="updateEditableText('characterName', $event)"
                     @keypress.13="$event.preventDefault(); $event.target.blur()"
                     style="min-width: 100%; min-height: 6mm;"
                 >
-                </h2>
+                </div>
             </div>
             <div class="inner-bottom">
                 <div class="boost-circle inner-border" :class="{'invisible': boostValue === 0}">
                     <div class="boost-value">
-                        <h3>
-                            {{boostValue}}
-                            <EditorUpDownButtons
-                                v-if="isEditable"
-                                class="editor"
-                                :minValue="0"
-                                :value="boostValue"
-                                @input="$emit('update:boostValue', $event)"
-                            />
-                        </h3>
+                        {{boostValue}}
+                        <EditorUpDownButtons
+                            v-if="isEditable"
+                            class="editor"
+                            :minValue="0"
+                            :value="boostValue"
+                            @input="$emit('update:boostValue', $event)"
+                        />
                     </div>
                 </div>
-                <h3
+                <div
+                    class="card-title"
                     v-text="cardTitle"
                     :contenteditable="isEditable"
                     @blur="updateEditableText('cardTitle', $event)"
@@ -73,7 +72,7 @@
                     style="min-height: 1.17em;"
                 >
 
-                </h3>
+                </div>
                 <hr />
                 <div class="card-text">
                     <div v-if="cardType === 'scheme'"
@@ -471,11 +470,6 @@ export default {
 }
 
 .printnplay {
-    .outer {
-        border-radius: 0;
-        background: var(--inner-border-colour);
-    }
-
     .upper-left {
         .border {
             fill: var(--inner-border-colour);
@@ -518,15 +512,6 @@ export default {
     border-color: var(--inner-border-colour);
 }
 
-.outer {
-    width: 63mm;
-    height: 88mm;
-    background: var(--outer-border-colour);
-    padding: 3mm;
-
-    border-radius: 2.5mm;
-}
-
 .main-wrapper {
     position: relative;
     // overflow: hidden;
@@ -562,11 +547,15 @@ export default {
     .boost-value {
         color: #FFF;
         padding-top: 0.1mm;
-
-        h3 {
-            margin: 0;
-        }
         position: relative;
+
+        display: block;
+        font-size: 1.17em;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        margin: 0;
     }
 }
 
@@ -585,7 +574,13 @@ export default {
     padding: 2mm 3mm 1mm;
     background: #000;
     color: #FFF;
-    h3 {
+    .card-title {
+        display: block;
+            font-size: 1.17em;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
         margin: 0;
     }
 
