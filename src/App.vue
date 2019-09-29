@@ -1,67 +1,124 @@
 <template>
     <div id="app" :style="userColours" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
-        <div class="no-print">
-            <UnmatchedCharacterCard
-                :isEditable="true"
-                :heroName.sync="deck.hero.name"
-                :heroIsRanged.sync="deck.hero.isRanged"
-                :heroHp.sync="deck.hero.hp"
-                :heroMove.sync="deck.hero.move"
-                :heroSpecialAbility.sync="deck.hero.specialAbility"
-                :sidekickName.sync="deck.sidekick.name"
-                :sidekickIsRanged.sync="deck.sidekick.isRanged"
-                :sidekickHp.sync="deck.sidekick.hp"
-                :sidekickQuantity.sync="deck.sidekick.quantity"
-                :sidekickQuote.sync="deck.sidekick.quote"
-            />
-            <div class="deck-properties no-print">
-                <div>
-                    <input type="checkbox" id="printnplay" v-model="deck.appearance.isPNP">
-                    <label for="printnplay">Print and play</label>
-                    Change colour scheme to use less ink when printing
+        <div class="no-print container">
+            <div class="row py-3">
+                <div class="col-auto">
+                    <UnmatchedCharacterCard
+                        :isEditable="true"
+                        :heroName.sync="deck.hero.name"
+                        :heroIsRanged.sync="deck.hero.isRanged"
+                        :heroHp.sync="deck.hero.hp"
+                        :heroMove.sync="deck.hero.move"
+                        :heroSpecialAbility.sync="deck.hero.specialAbility"
+                        :sidekickName.sync="deck.sidekick.name"
+                        :sidekickIsRanged.sync="deck.sidekick.isRanged"
+                        :sidekickHp.sync="deck.sidekick.hp"
+                        :sidekickQuantity.sync="deck.sidekick.quantity"
+                        :sidekickQuote.sync="deck.sidekick.quote"
+                    />
                 </div>
-                <div v-if="deck.appearance.isPNP">
-                    <label>Border colour</label>
-                    <input v-model="deck.appearance.borderColour" type="color">
-                </div>
-                <div v-else>
-                    <label>Highlight colour</label>
-                    <input v-model="deck.appearance.highlightColour" type="color">
-                </div>
-                <div>
-                    <label>Deck name</label>
-                    <input v-model="deck.name" placeholder="">
-                </div>
-                <div>
-                    <label>Number of sidekicks</label>
-                    <input v-model.number="deck.sidekick.quantity" type="number" min="0">
+                <div class="col deck-properties">
+                    <h2>Deck properties</h2>
+                    <div class="card-deck">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="printStyle"
+                                        id="production-radio"
+                                        v-model="deck.appearance.isPNP"
+                                        :value="false"
+                                    >
+                                    <h5 class="card-title">
+                                        <label for="production-radio">
+                                            Production
+                                        </label>
+                                    </h5>
+                                </div>
+                                <p class="card-text">
+                                    As close as possible to the real thing without having
+                                    Oliver Barrett do the art for you.
+                                </p>
+                                <p>
+                                    <div class="form-group">
+                                        <label>
+                                            Highlight colour
+                                        </label>
+                                        <input
+                                            v-model="deck.appearance.highlightColour"
+                                            :disabled="deck.appearance.isPNP"
+                                            class="form-control"
+                                            type="color"
+                                        >
+                                    </div>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        id="pnp-radio"
+                                        name="printStyle"
+                                        v-model="deck.appearance.isPNP"
+                                        :value="true"
+                                    >
+                                    <h5 class="card-title">
+                                        <label for="pnp-radio">
+                                            Print and play
+                                        </label>
+                                    </h5>
+                                </div>
+                                <p class="card-text">
+                                    Something a little simpler, but still great looking,
+                                    for saving ink when printing DIY cards.
+                                </p>
+                                <p>
+                                    <label>
+                                        Border colour
+                                    </label>
+                                    <input
+                                        v-model="deck.appearance.borderColour"
+                                        :disabled="!deck.appearance.isPNP"
+                                        class="form-control"
+                                        type="color"
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <UnmatchedCard v-for="card in fullDeck"
-                :isEditable="true"
-                :deckProperties="deck"
-                :cardType.sync="card.data.type"
-                :cardValue.sync="card.data.value"
-                :cardTitle.sync="card.data.title"
-                :characterName.sync="card.data.characterName"
-                :boostValue.sync="card.data.boost"
-                :basicText.sync="card.data.basicText"
-                :immediateText.sync="card.data.immediateText"
-                :duringText.sync="card.data.duringText"
-                :afterText.sync="card.data.afterText"
-                :imageUrl.sync="card.data.imageUrl"
-                :cardQuantity.sync="card.data.quantity"
-                :key="card.id"
-                class="float-left"
-            />
-            <div class="no-print">
-                <button @click="add">Add card</button>
+            <div class="row">
+                <div class="col-auto py-3" v-for="card in fullDeck">
+                    <UnmatchedCard
+                        :isEditable="true"
+                        :deckProperties="deck"
+                        :cardType.sync="card.data.type"
+                        :cardValue.sync="card.data.value"
+                        :cardTitle.sync="card.data.title"
+                        :characterName.sync="card.data.characterName"
+                        :boostValue.sync="card.data.boost"
+                        :basicText.sync="card.data.basicText"
+                        :immediateText.sync="card.data.immediateText"
+                        :duringText.sync="card.data.duringText"
+                        :afterText.sync="card.data.afterText"
+                        :imageUrl.sync="card.data.imageUrl"
+                        :cardQuantity.sync="card.data.quantity"
+                        :key="card.id"
+                        class="float-left"
+                    />
+                </div>
+                <div class="col">
+                    <button @click="add">Add card</button>
+                </div>
             </div>
         </div>
-        <div>
 
-        </div>
         <div class="print">
             <UnmatchedCharacterCard
                 :heroName="deck.hero.name"
@@ -289,8 +346,9 @@ export default {
     }
 
     .unmatched-card {
-        float: left;
-        margin: 50px;
+        line-height: normal;
+        // float: left;
+        // margin: 50px;
     }
 
     .unmatched-card {

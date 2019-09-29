@@ -73,7 +73,6 @@
                 >
 
                 </div>
-                <hr />
                 <div class="card-text">
                     <div v-if="cardType === 'scheme'"
                         v-text="basicText"
@@ -576,17 +575,13 @@ export default {
     color: #FFF;
     .card-title {
         display: block;
-            font-size: 1.17em;
-            margin-block-start: 1em;
-            margin-block-end: 1em;
-            margin-inline-start: 0px;
-            margin-inline-end: 0px;
-        margin: 0;
-    }
-
-    hr {
-        border-style: 0.3mm solid;
-        margin: 0mm 0 1mm;
+        font-size: 1.17em;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        margin: 0 0 1.8mm;
+        border-bottom: 0.3mm solid;
     }
 
     .card-text {

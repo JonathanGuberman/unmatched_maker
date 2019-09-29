@@ -638,7 +638,7 @@ export default {
             width: 78%;
         }
         margin-left: 1mm;
-        margin-top: -0.5mm;
+        margin-top: -0.8mm;
     }
 }
 
