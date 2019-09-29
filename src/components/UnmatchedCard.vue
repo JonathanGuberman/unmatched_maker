@@ -130,12 +130,14 @@
 
 <script>
 import EditorUpDownButtons from '@/components/EditorUpDownButtons.vue'
+import editable from '@/mixins/editable.js'
 
 export default {
     name: 'UnmatchedCard',
     components: {
         EditorUpDownButtons
     },
+    mixins: [editable],
     props: {
         deckProperties: {
             type: Object,
@@ -206,10 +208,6 @@ export default {
             }
 
             this.$emit('update:cardType', newType);
-        },
-        updateEditableText: function (prop, event) {
-            const newTitle = event.target.innerText;
-            this.$emit('update:' + prop, newTitle);
         },
         focusEditableText: function(event) {
             event.currentTarget.lastChild.focus();

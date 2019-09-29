@@ -1,28 +1,32 @@
 <template>
-    <div class="card"  >
+    <div class="card" :class="[isEditable ? 'editable':'']">
         <div class="main-wrapper">
             <div class="hero panel">
                 <div class="name section">
                     <div class="gutter">
-                        <h1>Hero</h1>
+                        <div>Hero</div>
                     </div>
-                    <div class="content xl">
-                        {{hero.name}}
+                    <div class="content xl"
+                        v-text="heroName"
+                        :contenteditable="isEditable"
+                        @blur="updateEditableText('heroName', $event)"
+                        @keypress.13="$event.preventDefault(); $event.target.blur()"
+                    >
                     </div>
                 </div>
                 <div class="attack-health section">
                     <div class="attack section">
                         <div class="gutter">
-                            <h1>Attack</h1>
+                            <div>Attack</div>
                         </div>
-                        <div>
-                            <img v-if="hero.isRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
+                        <div @click="$emit('update:heroIsRanged', !heroIsRanged)">
+                            <img v-if="heroIsRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
                             <img v-else class="melee icon" src="~@/assets/images/melee.svg">
                         </div>
                     </div>
                     <div class="health section">
                         <div class="gutter">
-                            <h1>Start health</h1>
+                            <div>Start health</div>
                         </div>
                         <div>
                             <svg width="12.1mm" height="6.7mm" viewBox="0 0 12.1 6.7">
@@ -56,9 +60,16 @@
                                     fill="none"
                                 />
                             </svg>
-                            <h2 class="hp">
-                                {{hero.hp}}
-                            </h2>
+                            <div class="hp">
+                                {{heroHp}}
+                                <EditorUpDownButtons
+                                    v-if="isEditable"
+                                    class="editor"
+                                    :value="heroHp"
+                                    @input="$emit('update:heroHp', $event)"
+                                    :minValue="1"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -67,10 +78,14 @@
             <div class="abilities panel">
                 <div class="special section">
                     <div class="gutter">
-                        <h1>Special abilities</h1>
+                        <div>Special abilities</div>
                     </div>
-                    <div class="content mixed-case">
-                        {{hero.specialAbility}}
+                    <div class="content mixed-case"
+                        v-text="heroSpecialAbility"
+                        :contenteditable="isEditable"
+                        @blur="updateEditableText('heroSpecialAbility', $event)"
+                        @keypress.13="$event.preventDefault(); $event.target.blur()"
+                    >
                     </div>
                 </div>
                 <div class="move section">
@@ -82,8 +97,15 @@
                         </svg>
                     </div>
                     <div class="value">
-                        {{hero.move}}
+                        {{heroMove}}
                     </div>
+                    <EditorUpDownButtons
+                        v-if="isEditable"
+                        class="editor"
+                        :value="heroMove"
+                        @input="$emit('update:heroMove', $event)"
+                        :minValue="1"
+                    />
                     <div class="title">
                         <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2790 12100" preserveAspectRatio="xMidYMid meet">
                             <g stroke="none">
@@ -98,29 +120,35 @@
             </div>
 
             <div class="sidekick panel">
-                <div v-if="sidekick.quantity" class="name section">
+                <div v-if="sidekickQuantity" class="name section">
                     <div class="gutter">
-                        <h1>Sidekick</h1>
+                        <div>Sidekick</div>
                     </div>
-                    <div class="content xl">
-                        {{sidekick.name}}
+                    <div class="content xl"
+                        v-text="sidekickName"
+                        :contenteditable="isEditable"
+                        @blur="updateEditableText('sidekickName', $event)"
+                        @keypress.13="$event.preventDefault(); $event.target.blur()"
+                    >
                     </div>
                 </div>
                 <div class="attack-health section">
-                    <div v-if="sidekick.quantity" class="attack section">
+                    <div v-if="sidekickQuantity" class="attack section">
                         <div class="gutter">
-                            <h1>Attack</h1>
+                            <div>Attack</div>
                         </div>
-                        <div v-if="sidekick.quantity">
-                            <img v-if="sidekick.isRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
+                        <div v-if="sidekickQuantity"
+                            @click="$emit('update:sidekickIsRanged', !sidekickIsRanged)"
+                        >
+                            <img v-if="sidekickIsRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
                             <img v-else class="melee icon" src="~@/assets/images/melee.svg">
                         </div>
                     </div>
-                    <div v-if="sidekick.quantity" class="health section">
+                    <div v-if="sidekickQuantity" class="health section">
                         <div class="gutter">
-                            <h1>Start health</h1>
+                            <div>Start health</div>
                         </div>
-                        <div v-if="sidekick.quantity===1">
+                        <div v-if="sidekickQuantity===1">
                             <svg width="12.1mm" height="6.7mm" viewBox="0 0 12.1 6.7">
                                 <path
                                     class="home-plate"
@@ -152,22 +180,49 @@
                                     fill="none"
                                 />
                             </svg>
-                            <h2 class="hp">
-                                {{sidekick.hp}}
-                            </h2>
+                            <div class="hp">
+                                {{sidekickHp}}
+                                <EditorUpDownButtons
+                                    v-if="isEditable"
+                                    class="editor"
+                                    :value="sidekickHp"
+                                    @input="$emit('update:sidekickHp', $event)"
+                                    :minValue="1"
+                                />
+                            </div>
                         </div>
                         <div v-else class="quantity">
                             <div class="circle"
-                                v-for="(item, index) in [...Array(sidekick.quantity)]"
+                                v-for="(item, index) in [...Array(sidekickQuantity)]"
                                 :key="index"
                                 :style="{'margin-left': circleOffset(index)}"
                             >
-                                <span v-if="index === sidekick.quantity -1">
-                                    X{{sidekick.quantity}}
+                                <span v-if="index === sidekickQuantity -1">
+                                    X{{sidekickQuantity}}
                                 </span>
                             </div>
+                            <EditorUpDownButtons
+                                v-if="isEditable"
+                                class="editor"
+                                :value="sidekickQuantity"
+                                @input="$emit('update:sidekickQuantity', $event)"
+                                :minValue="1"
+                            />
                         </div>
                     </div>
+
+                </div>
+                <div v-if="isEditable && sidekickQuantity <= 1"
+                    class="editor extra-quantity"
+                >
+                    X{{sidekickQuantity}}
+                    <EditorUpDownButtons
+                        v-if="isEditable"
+                        class="editor"
+                        :value="sidekickQuantity"
+                        @input="$emit('update:sidekickQuantity', $event)"
+                        :minValue="0"
+                    />
                 </div>
             </div>
         </div>
@@ -175,17 +230,50 @@
 </template>
 
 <script>
+import EditorUpDownButtons from '@/components/EditorUpDownButtons.vue'
+import editable from '@/mixins/editable.js'
+
 export default {
     name: 'UnmatchedCharacterCard',
+    components: {
+        EditorUpDownButtons
+    },
+    mixins: [editable],
     props: {
-        hero: {
-            type: Object,
-            required: true
+        isEditable: {
+            type: Boolean,
+            default: false
         },
-        sidekick: {
-            type: Object,
-            required: true
-        }
+        heroName: {
+            type: String,
+        },
+        heroIsRanged: {
+            type: Boolean,
+        },
+        heroHp: {
+            type: Number,
+        },
+        heroMove: {
+            type: Number,
+        },
+        heroSpecialAbility: {
+            type: String,
+        },
+        sidekickName: {
+            type: String,
+        },
+        sidekickIsRanged: {
+            type: Boolean,
+        },
+        sidekickHp: {
+            type: Number,
+        },
+        sidekickQuantity: {
+            type: Number,
+        },
+        sidekickQuote: {
+            type: String,
+        },
     },
     data: function () {
         return {
@@ -206,34 +294,45 @@ export default {
 
             // TODO Probably can use something better than scrollWidth; look into that
             this.initialWidth = width - paddingLeft - paddingRight;
+
+            this.scaleText('.hero .name .xl.content');
+            this.scaleText('.sidekick .name .xl.content');
         });
     },
     watch: {
-        'hero.name': function() {
+        'heroName': function() {
             this.$nextTick(() => {
-                const heroNameText = this.$el.querySelector('.hero .name .xl.content');
-                const width = heroNameText.scrollWidth;
-
-                heroNameText.style['transform'] = 'scaleX(1)';
-                if (width > this.initialWidth) {
-                    heroNameText.style['transform'] =`scaleX(${this.initialWidth/width})`;
-                    heroNameText.style['transform-origin'] = 'left bottom';
-                }
+                this.scaleText('.hero .name .xl.content');
+            });
+        },
+        'sidekickName': function() {
+            this.$nextTick(() => {
+                this.scaleText('.sidekick .name .xl.content');
             });
         }
     },
     methods: {
+        scaleText: function(selector) {
+            const heroNameText = this.$el.querySelector(selector);
+            const width = heroNameText.scrollWidth;
+
+            heroNameText.style['transform'] = 'scaleX(1)';
+            if (width > this.initialWidth) {
+                heroNameText.style['transform'] =`scaleX(${this.initialWidth/width})`;
+                heroNameText.style['transform-origin'] = 'left bottom';
+            }
+        },
         circleOffset: function(index) {
             const circleSize = 5.5;
             var offset;
 
-            if (this.sidekick.quantity === 2){
+            if (this.sidekickQuantity === 2){
                 offset = index ? -circleSize/6 : -5*circleSize/6;
             } else {
                 const farLeftOffset = -5.5;
                 const farRightOffset = 5.5 - circleSize;
                 const diff = farRightOffset - farLeftOffset;
-                offset = farLeftOffset + index/(this.sidekick.quantity - 1) * diff;
+                offset = farLeftOffset + index/(this.sidekickQuantity - 1) * diff;
             }
 
             return offset + "mm"
@@ -258,6 +357,135 @@ export default {
   }
 }
 
+.editable {
+    &:hover {
+        // .editor {
+        //     visibility: visible;
+        //     opacity: 0.5;
+        // }
+
+        .invisible {
+            opacity: 1;
+        }
+    }
+
+    /deep/ .editor {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 3;
+    }
+
+    /deep/ .invalid {
+        visibility: hidden;
+    }
+
+    /deep/ button {
+        width: auto;
+        height: auto;
+        border: none;
+        background: none;
+        padding: 0;
+        border-radius: 50%;
+        text-align: center;
+        display: block;
+        float: right;
+        clear: right;
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+        }
+
+        .far, .fad, .fal, .fas {
+            background: #FFF;
+            color: #000;
+        }
+    }
+
+    /deep/ .value {
+        + .editor {
+            left: 68%;
+            height: 50%;
+            width: auto;
+            visibility: hidden;
+            &:hover {
+                visibility: visible;
+            }
+        }
+
+        &:hover + .editor {
+            visibility: visible;
+        }
+    }
+
+    /deep/ .hp {
+        .editor {
+            height: 12mm;
+            top: -3.9mm;
+            left: 3.5mm;
+            visibility: hidden;
+        }
+
+        &:hover .editor {
+            visibility: visible;
+        }
+    }
+
+    /deep/ .quantity {
+        .editor {
+            height: 12mm;
+            top: -2.9mm;
+            left: 5mm;
+            visibility: hidden;
+        }
+
+        &:hover .editor {
+            visibility: visible;
+        }
+    }
+
+    .sidekick:hover .extra-quantity {
+        visibility: visible;
+    }
+
+    /deep/ .extra-quantity {
+        visibility: hidden;
+        position: absolute;
+        width: 10mm;
+        bottom: 0;
+        right: -8mm;
+        left: unset;
+        top: unset;
+        color: black;
+        padding-top: 13mm;
+        text-align: right;
+        font-size: 5mm;
+
+        .editor {
+            top: unset;
+            left: unset;
+            height: auto;
+            right: -7mm;
+            bottom: -1.7mm;
+            visibility: hidden;
+            &:hover .editor {
+                visibility: visible;
+            }
+        }
+
+        &:hover .editor {
+            visibility: visible;
+        }
+    }
+
+    .invisible:hover {
+        opacity: 1;
+    }
+}
+
 .inner-border {
     background: var(--inner-border-colour);
     border-color: var(--inner-border-colour);
@@ -273,7 +501,6 @@ export default {
 }
 
 .main-wrapper {
-    overflow: hidden;
     border-radius: @corner;
 }
 
@@ -290,7 +517,7 @@ export default {
     }
 
     .gutter {
-        h1 {
+        div {
             color: #999;
         }
     }
@@ -327,9 +554,18 @@ export default {
 }
 
 .panel {
+    position: relative;
     height: 19.6mm;
     background: #000;
     color: #FFF;
+
+    &.hero {
+        border-radius: @corner @corner 0 0;
+    }
+
+    &.sidekick {
+        border-radius: 0 0 @corner @corner;
+    }
 
     &.abilities {
         height: 40.4mm + 2*@thick-border-width;
@@ -356,6 +592,7 @@ export default {
     }
 
     .content {
+        height: 100%;
         margin-left: 3.9mm; // gutter width
         padding-left: 1.7mm;
         padding-right: 1.7mm;
@@ -372,7 +609,6 @@ export default {
     }
     &.attack-health {
         height: 8.1mm;
-        overflow: hidden;
         .section {
             padding-top: 1.3mm;
         }
@@ -386,7 +622,7 @@ export default {
     border-right: @thinner-border-width solid var(--inner-border-colour);
     position: relative;
 
-    h1 {
+    div {
         color: var(--inner-border-colour);
 
         bottom: 1mm;
@@ -446,6 +682,7 @@ export default {
     }
 
     .value {
+        position: relative;
         height: 20mm;
         text-align: center;
         font-size: 18mm;
@@ -470,7 +707,7 @@ export default {
     position: relative;
     .gutter {
         width: 6.3mm;
-        h1 {
+        div {
             left: 5.4mm;
             white-space: initial;
             line-height: 0.9em;

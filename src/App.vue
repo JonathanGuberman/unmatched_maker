@@ -2,8 +2,17 @@
     <div id="app" :style="userColours" >
         <div class="no-print" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
             <UnmatchedCharacterCard
-                :hero="deck.hero"
-                :sidekick="deck.sidekick"
+                :isEditable="true"
+                :heroName.sync="deck.hero.name"
+                :heroIsRanged.sync="deck.hero.isRanged"
+                :heroHp.sync="deck.hero.hp"
+                :heroMove.sync="deck.hero.move"
+                :heroSpecialAbility.sync="deck.hero.specialAbility"
+                :sidekickName.sync="deck.sidekick.name"
+                :sidekickIsRanged.sync="deck.sidekick.isRanged"
+                :sidekickHp.sync="deck.sidekick.hp"
+                :sidekickQuantity.sync="deck.sidekick.quantity"
+                :sidekickQuote.sync="deck.sidekick.quote"
             />
             <div class="deck-properties no-print">
                 <div>
@@ -15,7 +24,7 @@
                     <label>Border colour</label>
                     <input v-model="deck.appearance.borderColour" type="color">
                 </div>
-                <div v-if="!deck.appearance.isPNP">
+                <div v-else>
                     <label>Highlight colour</label>
                     <input v-model="deck.appearance.highlightColour" type="color">
                 </div>
@@ -24,59 +33,11 @@
                     <input v-model="deck.name" placeholder="">
                 </div>
                 <div>
-                    <label>Hero name</label>
-                    <input v-model="deck.hero.name" placeholder="">
-                </div>
-                <div>
-                    <label>Hero attack type</label>
-                    <input type="radio" v-model="deck.hero.isRanged" :value="false">
-                    <label>
-                        Melee
-                    </label>
-                    <br>
-                    <input type="radio" v-model="deck.hero.isRanged" :value="true">
-                    <label>
-                        Ranged
-                    </label>
-                </div>
-                <div>
-                    <label>Hero HP</label>
-                    <input v-model.number="deck.hero.hp" type="number" min="1">
-                </div>
-                <div>
-                    <label>Special Ability</label>
-                    <textarea v-model="deck.hero.specialAbility"></textarea>
-                </div>
-                <div>
-                    <label>Movement</label>
-                    <input v-model.number="deck.hero.move" type="number" min="1">
-                </div>
-                <div>
-                    <label>Sidekick name</label>
-                    <input v-model="deck.sidekick.name" placeholder="">
-                </div>
-                <div>
-                    <label>Sidekick attack type</label>
-                    <input type="radio" v-model="deck.sidekick.isRanged" :value="false">
-                    <label>
-                        Melee
-                    </label>
-                    <br>
-                    <input type="radio" v-model="deck.sidekick.isRanged" :value="true">
-                    <label>
-                        Ranged
-                    </label>
-                </div>
-                <div>
-                    <label>Sidekick HP</label>
-                    <input v-model.number="deck.sidekick.hp" type="number" min="1">
-                </div>
-                <div>
                     <label>Number of sidekicks</label>
                     <input v-model.number="deck.sidekick.quantity" type="number" min="0">
                 </div>
             </div>
-            <!--<CardEditor v-for="card in fullDeck" v-model="card.data" :deck="deck" :key="card.id"/>-->
+
             <UnmatchedCard v-for="card in fullDeck"
                 :isEditable="true"
                 :deckProperties="deck"
