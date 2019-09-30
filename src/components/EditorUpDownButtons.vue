@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <button @click="updateValue(stepValue)" :class="{invalid: isMax}">
-            <span class="fa-layers fa-fw fa-2x">
+    <div class="up-down-buttons">
+        <div :class="[isMax ? 'invalid' : 'valid']">
+            <span @click="updateValue(stepValue)" class="fa-layers fa-fw">
                 <i class="fa-inverse fas fa-circle"></i>
                 <i class="far fa-caret-circle-up"></i>
             </span>
@@ -9,13 +9,13 @@
               <i class="fa-inverse fas fa-caret-up"></i>
               <i class="far fa-caret-up"></i>
             </span>-->
-        </button>
-        <button @click="updateValue(-stepValue)" :class="{invalid: isMin}">
-            <span class="fa-layers fa-fw fa-2x">
+        </div>
+        <div :class="[isMin ? 'invalid' : 'valid']">
+            <span @click="updateValue(-stepValue)" class="fa-layers fa-fw">
                 <i class="fa-inverse fas fa-circle"></i>
                 <i class="far fa-caret-circle-down"></i>
             </span>
-        </button>
+        </div>
     </div>
 </template>
 
@@ -58,3 +58,13 @@
         }
     }
 </script>
+
+<style lang="less" scoped>
+    .up-down-buttons {
+        color: black;
+        font-size: 8mm;
+    }
+    .valid span {
+        cursor: pointer;
+    }
+</style>

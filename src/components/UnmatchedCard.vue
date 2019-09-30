@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="inner-bottom">
-                <div class="boost-circle inner-border" :class="{'invisible': boostValue === 0}">
+                <div class="boost-circle inner-border" :class="{'um-invisible': boostValue === 0}">
                     <div class="boost-value">
                         {{boostValue}}
                         <EditorUpDownButtons
@@ -78,7 +78,7 @@
                         v-text="basicText"
                         :contenteditable="isEditable"
                         @blur="updateEditableText('basicText', $event)"
-                        style="min-height: 100%;"
+                        style="min-height: 100%; white-space: pre-wrap;"
                     >
                     </div>
                     <div v-else>
@@ -87,6 +87,7 @@
                             <span
                                 v-text="immediateText"
                                 :contenteditable="isEditable"
+                                style="white-space: pre-wrap;"
                                 @blur="updateEditableText('immediateText', $event)"
                             ></span>
                         </div>
@@ -95,6 +96,7 @@
                             <span
                                 v-text="duringText"
                                 :contenteditable="isEditable"
+                                style="white-space: pre-wrap;"
                                 @blur="updateEditableText('duringText', $event)"
                             ></span>
                         </div>
@@ -103,6 +105,7 @@
                             <span
                                 v-text="afterText"
                                 :contenteditable="isEditable"
+                                style="white-space: pre-wrap;"
                                 @blur="updateEditableText('afterText', $event)"
                             ></span>
                         </div>
@@ -209,7 +212,7 @@ export default {
         },
         focusEditableText: function(event) {
             event.currentTarget.lastChild.focus();
-        }
+        },
     }
 }
 </script>
@@ -243,7 +246,7 @@ export default {
         //     opacity: 0.5;
         // }
 
-        .invisible {
+        .um-invisible {
             opacity: 1;
         }
     }
@@ -278,35 +281,13 @@ export default {
         visibility: hidden;
     }
 
-    /deep/ button {
-        width: auto;
-        height: auto;
-        border: none;
-        background: none;
-        padding: 0;
-        border-radius: 50%;
-        text-align: center;
-        display: block;
-        float: right;
-        clear: right;
-        cursor: pointer;
-
-        &:focus {
-            outline: none;
-        }
-
-        .far, .fad, .fal, .fas {
-            background: #FFF;
-            color: #000;
-        }
-    }
-
     /deep/ .value {
         position: relative;
         .editor {
-            left: 68%;
-            top: -1.1mm;
-            width: auto;
+            left: 6mm;
+            top: -4.5mm;
+            width: 10mm;
+            height: 18mm;
             visibility: hidden;
         }
 
@@ -318,10 +299,10 @@ export default {
     /deep/ .boost-value {
         position: relative;
         .editor {
-            top: -2.1mm;
-            left: 68%;
-            width: auto;
-            height: auto;
+            left: 2.8mm;
+            top: -5.8mm;
+            width: 10mm;
+            height: 18mm;
             visibility: hidden;
             opacity: 1;
         }
@@ -333,12 +314,12 @@ export default {
 
     /deep/ .card-quantity {
         .editor {
-            width: auto;
-            height: auto;
+            width: 10mm;
+            height: 18mm;
             visibility: hidden;
             opacity: 1;
-            top: -4mm;
-            left: 1mm;
+            top: -7mm;
+            left: 0mm;
         }
 
         // &:hover {
@@ -350,7 +331,7 @@ export default {
         }
     }
 
-    .invisible:hover {
+    .um-invisible:hover {
         opacity: 1;
     }
 
@@ -361,7 +342,7 @@ export default {
     }
 }
 
-.invisible {
+.um-invisible {
     opacity: 0;
 }
 

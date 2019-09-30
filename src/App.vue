@@ -18,25 +18,16 @@
                     />
                 </div>
                 <div class="col deck-properties">
-                    <h2>Deck properties</h2>
+                    <h2>Appearance</h2>
                     <div class="card-deck">
-                        <div class="card">
+                        <div class="card"
+                            :class="[deck.appearance.isPNP ? 'text-muted' : 'border-primary']"
+                            @click="deck.appearance.isPNP = false"
+                        >
+                            <h5 class="card-header">
+                                Production
+                            </h5>
                             <div class="card-body">
-                                <div class="form-check">
-                                    <input
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="printStyle"
-                                        id="production-radio"
-                                        v-model="deck.appearance.isPNP"
-                                        :value="false"
-                                    >
-                                    <h5 class="card-title">
-                                        <label for="production-radio">
-                                            Production
-                                        </label>
-                                    </h5>
-                                </div>
                                 <p class="card-text">
                                     As close as possible to the real thing without having
                                     Oliver Barrett do the art for you.
@@ -56,23 +47,14 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="card">
+                        <div class="card"
+                            :class="[deck.appearance.isPNP ? 'border-primary': 'text-muted']"
+                            @click="deck.appearance.isPNP = true"
+                        >
+                            <h5 class="card-header">
+                                Print and play
+                            </h5>
                             <div class="card-body">
-                                <div class="form-check">
-                                    <input
-                                        class="form-check-input"
-                                        type="radio"
-                                        id="pnp-radio"
-                                        name="printStyle"
-                                        v-model="deck.appearance.isPNP"
-                                        :value="true"
-                                    >
-                                    <h5 class="card-title">
-                                        <label for="pnp-radio">
-                                            Print and play
-                                        </label>
-                                    </h5>
-                                </div>
                                 <p class="card-text">
                                     Something a little simpler, but still great looking,
                                     for saving ink when printing DIY cards.

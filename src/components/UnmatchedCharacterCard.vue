@@ -80,12 +80,14 @@
                     <div class="gutter">
                         <div>Special abilities</div>
                     </div>
-                    <div class="content mixed-case"
-                        v-text="heroSpecialAbility"
-                        :contenteditable="isEditable"
-                        @blur="updateEditableText('heroSpecialAbility', $event)"
-                        @keypress.13="$event.preventDefault(); $event.target.blur()"
-                    >
+                    <div class="content">
+                        <span
+                            v-text="heroSpecialAbility"
+                            :contenteditable="isEditable"
+                            style="white-space: pre-wrap;"
+                            class="mixed-case"
+                            @blur="updateEditableText('heroSpecialAbility', $event)"
+                        ></span>
                     </div>
                 </div>
                 <div class="move section">
@@ -312,6 +314,9 @@ export default {
         }
     },
     methods: {
+        debug: function(event) {
+            console.debug(event.target.innerHTML);
+        },
         scaleText: function(selector) {
             const heroNameText = this.$el.querySelector(selector);
             const width = heroNameText.scrollWidth;
@@ -363,10 +368,6 @@ export default {
         //     visibility: visible;
         //     opacity: 0.5;
         // }
-
-        .invisible {
-            opacity: 1;
-        }
     }
 
     /deep/ .editor {
@@ -380,29 +381,6 @@ export default {
 
     /deep/ .invalid {
         visibility: hidden;
-    }
-
-    /deep/ button {
-        width: auto;
-        height: auto;
-        border: none;
-        background: none;
-        padding: 0;
-        border-radius: 50%;
-        text-align: center;
-        display: block;
-        float: right;
-        clear: right;
-        cursor: pointer;
-
-        &:focus {
-            outline: none;
-        }
-
-        .far, .fad, .fal, .fas {
-            background: #FFF;
-            color: #000;
-        }
     }
 
     /deep/ .value {
@@ -423,9 +401,10 @@ export default {
 
     /deep/ .hp {
         .editor {
-            height: 12mm;
-            top: -3.9mm;
-            left: 3.5mm;
+            height: 18mm;
+            width: 10mm;
+            top: -6.5mm;
+            left: 12.5mm;
             visibility: hidden;
         }
 
@@ -436,9 +415,10 @@ export default {
 
     /deep/ .quantity {
         .editor {
-            height: 12mm;
-            top: -2.9mm;
-            left: 5mm;
+            height: 18mm;
+            width: 10mm;
+            top: -6mm;
+            left: 6.5mm;
             visibility: hidden;
         }
 
@@ -454,7 +434,7 @@ export default {
     /deep/ .extra-quantity {
         visibility: hidden;
         position: absolute;
-        width: 10mm;
+        width: 8mm;
         bottom: 0;
         right: -8mm;
         left: unset;
@@ -465,11 +445,10 @@ export default {
         font-size: 5mm;
 
         .editor {
-            top: unset;
-            left: unset;
-            height: auto;
-            right: -7mm;
-            bottom: -1.7mm;
+            height: 18mm;
+            width: 10mm;
+            top: 7mm;
+            left: 6.5mm;
             visibility: hidden;
             &:hover .editor {
                 visibility: visible;
@@ -479,10 +458,6 @@ export default {
         &:hover .editor {
             visibility: visible;
         }
-    }
-
-    .invisible:hover {
-        opacity: 1;
     }
 }
 
@@ -646,6 +621,12 @@ export default {
     height: 100%;
     width: 47.4mm;
     float:left;
+
+    .content span {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .move {
