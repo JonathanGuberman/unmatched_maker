@@ -19,9 +19,10 @@
                         <div class="gutter">
                             <div>Attack</div>
                         </div>
-                        <div @click="$emit('update:heroIsRanged', !heroIsRanged)">
+                        <div class="attack-type">
                             <img v-if="heroIsRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
                             <img v-else class="melee icon" src="~@/assets/images/melee.svg">
+                            <div v-if="isEditable" class="editor" @click="$emit('update:heroIsRanged', !heroIsRanged)"></div>
                         </div>
                     </div>
                     <div class="health section">
@@ -139,11 +140,10 @@
                         <div class="gutter">
                             <div>Attack</div>
                         </div>
-                        <div v-if="sidekickQuantity"
-                            @click="$emit('update:sidekickIsRanged', !sidekickIsRanged)"
-                        >
+                        <div class="attack-type" v-if="sidekickQuantity">
                             <img v-if="sidekickIsRanged" class="ranged icon" src="~@/assets/images/ranged.svg">
                             <img v-else class="melee icon" src="~@/assets/images/melee.svg">
+                            <div v-if="isEditable" class="editor" @click="$emit('update:sidekickIsRanged', !sidekickIsRanged)"></div>
                         </div>
                     </div>
                     <div v-if="sidekickQuantity" class="health section">
@@ -600,6 +600,7 @@ export default {
 }
 
 .attack {
+    position: relative;
     height: 100%;
     width: 38.2mm + @thin-border-width;
     float: left;
