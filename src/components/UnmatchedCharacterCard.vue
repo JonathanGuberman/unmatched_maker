@@ -6,12 +6,13 @@
                     <div class="gutter">
                         <div>Hero</div>
                     </div>
-                    <div class="content xl"
-                        v-text="heroName"
-                        :contenteditable="isEditable"
-                        @blur="updateEditableText('heroName', $event)"
-                        @keypress.13="$event.preventDefault(); $event.target.blur()"
-                    >
+                    <div class="content xl" @click="focusEditableText">
+                        <span
+                            v-text="heroName" class="scale-text"
+                            :contenteditable="isEditable"
+                            @blur="updateEditableText('heroName', $event)"
+                            @keypress.13="$event.preventDefault(); $event.target.blur()"
+                        ></span>
                     </div>
                 </div>
                 <div class="attack-health section">
@@ -127,12 +128,13 @@
                     <div class="gutter">
                         <div>Sidekick</div>
                     </div>
-                    <div class="content xl"
-                        v-text="sidekickName"
-                        :contenteditable="isEditable"
-                        @blur="updateEditableText('sidekickName', $event)"
-                        @keypress.13="$event.preventDefault(); $event.target.blur()"
-                    >
+                    <div class="content xl" @click="focusEditableText">
+                        <span
+                            v-text="sidekickName" class="scale-text"
+                            :contenteditable="isEditable"
+                            @blur="updateEditableText('sidekickName', $event)"
+                            @keypress.13="$event.preventDefault(); $event.target.blur()"
+                        ></span>
                     </div>
                 </div>
                 <div class="attack-health section">
@@ -294,37 +296,39 @@ export default {
             const paddingRight = parseFloat(computedStyle.paddingRight.replace('px',''));
             const width = parseFloat(computedStyle.width.replace('px',''));
 
-            // TODO Probably can use something better than scrollWidth; look into that
             this.initialWidth = width - paddingLeft - paddingRight;
 
-            this.scaleText('.hero .name .xl.content');
-            this.scaleText('.sidekick .name .xl.content');
+            this.scaleText('.hero .name .xl.content span');
+            this.scaleText('.sidekick .name .xl.content span');
         });
     },
     watch: {
         'heroName': function() {
             this.$nextTick(() => {
-                this.scaleText('.hero .name .xl.content');
+                this.scaleText('.hero .name .xl.content span');
             });
         },
         'sidekickName': function() {
             this.$nextTick(() => {
-                this.scaleText('.sidekick .name .xl.content');
+                this.scaleText('.sidekick .name .xl.content span');
             });
         }
     },
     methods: {
-        debug: function(event) {
-            console.debug(event.target.innerHTML);
-        },
         scaleText: function(selector) {
             const heroNameText = this.$el.querySelector(selector);
-            const width = heroNameText.scrollWidth;
+            const width = heroNameText.offsetWidth;
 
-            heroNameText.style['transform'] = 'scaleX(1)';
-            if (width > this.initialWidth) {
-                heroNameText.style['transform'] =`scaleX(${this.initialWidth/width})`;
-                heroNameText.style['transform-origin'] = 'left bottom';
+            // Need to check width because for some reason
+            // this gets fired twice, once with the width=0,
+            // which would reset the scale to (1) every time
+            if (width){
+                heroNameText.style['transform'] = 'scaleX(1)';
+                if (width > this.initialWidth) {
+                    console.debug(`Setting ${width}`);
+                    heroNameText.style['transform'] =`scaleX(${this.initialWidth/width})`;
+                    heroNameText.style['transform-origin'] = 'left bottom';
+                }
             }
         },
         circleOffset: function(index) {
@@ -377,6 +381,10 @@ export default {
         top: 0;
         left: 0;
         z-index: 3;
+    }
+
+    .attack .editor {
+        cursor: pointer;
     }
 
     /deep/ .invalid {
@@ -458,6 +466,10 @@ export default {
         &:hover .editor {
             visibility: visible;
         }
+    }
+
+    .name .content {
+        cursor: text;
     }
 }
 
@@ -556,6 +568,10 @@ export default {
         margin-left: 3.9mm; // gutter width
         padding-left: 1.7mm;
         padding-right: 1.7mm;
+
+        .scale-text {
+            display: inline-block;
+        }
     }
 }
 

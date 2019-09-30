@@ -2,6 +2,50 @@
     <div id="app" :style="userColours" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
         <div class="no-print container">
             <div class="row py-3">
+                <div class="col-10">
+                    <h1>Unmatched Deck Creator</h1>
+                    <p>
+                        Unmatched is a board game from Restoration Games
+                        and Mondo. Here's how they describe it:
+                    </p>
+                    <blockquote class="blockquote px-5">
+                        <p class="mb-0">
+                            Unmatched is a highly asymmetrical miniature fighting game
+                            for two or four players. Each hero is represented by a
+                            unique deck designed to evoke their style and legend.
+                            Tactical movement and no-luck combat resolution create
+                            a unique play experience that rewards expertise,
+                            but just when you've mastered one set, new heroes
+                            arrive to provide all new match-ups.
+                        </p>
+                    </blockquote>
+                    <p>
+                        Of course, the more heroes there are to choose from,
+                        the more fun the game becomes. So, in the hopes of facilitating
+                        a community of fan expansions, this tool allows anybody to
+                        create a deck in the style of the real game.
+                    </p>
+                </div>
+            </div>
+            <div class="row py-3">
+                <div class="col-auto">
+                    <h2>Getting started</h2>
+                    <p>
+                        Edit any text on the card by clicking on it and typing.
+                        For numbers, when you mouse over them buttons will appear
+                        allowing you to adjust them.
+                    </p>
+                    <p>
+                        If you want more than one of the same card,
+                        change the number in the lower right corner and it
+                        will be duplicated automatically. Any changes you make
+                        to any of the copies will get changed on all of the copies
+                        of that card.
+                    </p>
+
+                </div>
+            </div>
+            <div class="row py-3">
                 <div class="col-auto">
                     <UnmatchedCharacterCard
                         :isEditable="true"
@@ -19,7 +63,7 @@
                 </div>
                 <div class="col deck-properties">
                     <h2>Appearance</h2>
-                    <div class="card-deck">
+                    <div class="card-deck appearance">
                         <div class="card"
                             :class="[deck.appearance.isPNP ? 'text-muted' : 'border-primary']"
                             @click="deck.appearance.isPNP = false"
@@ -346,5 +390,9 @@ export default {
         font-weight: normal;
         font-family: BebasNeueRegular, sans-serif;
         color-adjust: exact;
+    }
+
+    .appearance .card {
+        cursor: pointer;
     }
 </style>

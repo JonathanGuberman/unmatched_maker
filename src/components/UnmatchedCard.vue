@@ -210,9 +210,6 @@ export default {
 
             this.$emit('update:cardType', newType);
         },
-        focusEditableText: function(event) {
-            event.currentTarget.lastChild.focus();
-        },
     }
 }
 </script>
@@ -249,6 +246,10 @@ export default {
         .um-invisible {
             opacity: 1;
         }
+    }
+
+    .character-name {
+        cursor: vertical-text;
     }
 
     .inner-top {
@@ -337,6 +338,7 @@ export default {
 
     .card-text:hover, .card-text:focus-within {
         .empty {
+            cursor: text;
             display: block;
         }
     }
