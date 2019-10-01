@@ -213,8 +213,13 @@ export default {
         },
     },
     watch: {
-        'characterName': function() {
-            this.$nextTick(() =>{this.resizeCanton();})
+        'characterName': {
+            immediate: true,
+            handler: function(newValue) {
+                this.$nextTick(() =>{
+                    this.resizeCanton();
+                })
+            }
         }
     },
     mounted: function() {

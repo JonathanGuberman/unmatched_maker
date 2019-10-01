@@ -2,34 +2,29 @@
     <div id="app" :style="userColours" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
         <div class="no-print container">
             <div class="row py-3 justify-content-center">
-                <div class="col-10">
-                    <h1>Unmatched Deck Creator</h1>
+                <div class="col-xl-10">
+                    <h1>Unmatched Maker</h1>
                     <p>
                         Unmatched is a board game from Restoration Games
-                        and Mondo. Here's how they describe it:
+                        and Mondo Games where players control various iconic
+                        characters in combat against each other.
+                        Each character has their own deck with a unique fighting style.
                     </p>
-                    <blockquote class="blockquote px-5">
-                        <p class="mb-0">
-                            Unmatched is a highly asymmetrical miniature fighting game
-                            for two or four players. Each hero is represented by a
-                            unique deck designed to evoke their style and legend.
-                            Tactical movement and no-luck combat resolution create
-                            a unique play experience that rewards expertise,
-                            but just when you've mastered one set, new heroes
-                            arrive to provide all new match-ups.
-                        </p>
-                    </blockquote>
                     <p>
                         Of course, the more heroes there are to choose from,
                         the more fun the game becomes. So, in the hopes of facilitating
                         a community of fan expansions, this tool allows anybody to
                         create a deck in the style of the real game.
                     </p>
+                    <p>
+                        <strong>This tool is not in any way affiliated with Restoration Games
+                        or Mondo Games.</strong>
+                    </p>
                 </div>
             </div>
 
-            <div class="row py-3">
-                <div class="col">
+            <div class="row py-3 justify-content-center">
+                <div class="col-xl-10">
                     <h2>Editing</h2>
                     <p>
                         Move your mouse over the cards to see what you can edit.
@@ -46,7 +41,7 @@
                         modifications to any one will affect all of them!
                     </p>
                 </div>
-                <div class="col">
+                <div class="col-xl-10">
                     <h2>Printing</h2>
                     <p>
                         What you see is not quite what you get: when you print,
@@ -66,7 +61,7 @@
                         dialogue on Windows.
                     </p>
                 </div>
-                <div class="col">
+                <div class="col-xl-10">
                     <h2>Saving and sharing</h2>
                     <p>
                         As you work your deck is automatically saved to your browser's local storage;
@@ -77,17 +72,136 @@
                         If you want to make more than one deck or share decks with friends,
                         scroll to the <a href="#deck-definition">Deck Definition</a> section.
                         There you can copy and paste the code that defines your deck.
+                        In the future I hope to have a more readable format for sharing, but
+                        for now JSON will have to do.
                     </p>
-                    <p>
-                        (In the future I hope to have a more readable format for sharing, but
-                        for now JSON will have to do.)
-                    </p>
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>Example</h4>
+                        </div>
+                        <div class="col-7">
+                            <p>
+                                Try copying this example deck and pasting it
+                                in the <a href="#deck-definition">Deck Definition</a> area.
+                                As an added bonus, the cards will illustrate some of Unmatched
+                                Maker's features.
+                            </p>
+                        </div>
+                        <div class="col">
+                            <textarea readonly onclick="this.focus();this.select()" style="width: 100%; height:100px; font-family: monospace;">{
+  "name": "",
+  "appearance": {
+    "isPNP": false,
+    "borderColour": "#dbc6ef",
+    "highlightColour": "#ff7c41"
+  },
+  "hero": {
+    "name": "Hero",
+    "isRanged": false,
+    "hp": 15,
+    "move": 2,
+    "specialAbility": "This is a demo deck meant to show some of the capabilities of the generator and familiarise you with how it works.\nTry changing the Hero and Sidekick's names and properties!\n"
+  },
+  "sidekick": {
+    "name": "sidekick",
+    "isRanged": true,
+    "hp": 6,
+    "quantity": 1,
+    "quote": "I work best alone"
+  },
+  "cards": [
+    {
+      "title": "Your first card",
+      "type": "scheme",
+      "characterName": "ANY",
+      "value": 2,
+      "boost": 4,
+      "basicText": "Try changing the quantity of this card by hovering over the number in the lower right corner and clicking the \"increase\" button.",
+      "immediateText": "",
+      "duringText": "",
+      "afterText": "",
+      "imageUrl": "",
+      "quantity": 1
+    },
+    {
+      "title": "Did it work?",
+      "type": "defence",
+      "characterName": "SUCCESS",
+      "value": 2,
+      "boost": 3,
+      "basicText": "",
+      "immediateText": "",
+      "duringText": "",
+      "afterText": "There should now be two copies of YOUR FIRST CARD. Try modifying either one: both copies will change!",
+      "imageUrl": "",
+      "quantity": 1
+    },
+    {
+      "title": "Changing types",
+      "type": "versatile",
+      "characterName": "Any",
+      "value": 3,
+      "boost": 2,
+      "basicText": "",
+      "immediateText": "Clicking on the icon in the top left will change the card type.",
+      "duringText": "",
+      "afterText": "",
+      "imageUrl": "",
+      "quantity": 1
+    },
+    {
+      "title": "The wrath of vul-kar",
+      "type": "attack",
+      "characterName": "VUL-KAR",
+      "value": 4,
+      "boost": 1,
+      "basicText": "",
+      "immediateText": "Here's an example of a card with an image.",
+      "duringText": "",
+      "afterText": "",
+      "imageUrl": "https://restorationgames.com/wp-content/uploads/2018/09/FireballIsland-BoxTopcontents-1.jpg",
+      "quantity": 1
+    },
+    {
+      "title": "no boost",
+      "type": "defence",
+      "characterName": "ANY",
+      "value": 2,
+      "boost": 0,
+      "basicText": "",
+      "immediateText": "Notice that this card doesn't show a bosot value, because it's zero",
+      "duringText": "Hover over the card to see and edit the bost value",
+      "afterText": "",
+      "imageUrl": "",
+      "quantity": 1
+    },
+    {
+      "title": "Auto-resizing text",
+      "type": "scheme",
+      "characterName": "SQUISHED  NAME",
+      "value": 2,
+      "boost": 1,
+      "basicText": "Try typing a long name in the upper left corner, or for the Hero and Sidekick names on the character card. The text and area should resize as needed.",
+      "immediateText": "",
+      "duringText": "",
+      "afterText": "",
+      "imageUrl": "",
+      "quantity": 1
+    }
+  ]
+}
+                            </textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="row py-3">
+                <div class="col-12">
+                    <h2>Deck Editor</h2>
+                </div>
                 <div class="col-auto">
-                    <h2>Character</h2>
+                    <h3>Character</h3>
                     <UnmatchedCharacterCard
                         :isEditable="true"
                         :heroName.sync="deck.hero.name"
@@ -103,7 +217,7 @@
                     />
                 </div>
                 <div class="col deck-properties">
-                    <h2>Appearance</h2>
+                    <h3>Appearance</h3>
                     <div class="card-deck appearance">
                         <div class="card"
                             :class="[deck.appearance.isPNP ? 'text-muted' : 'border-primary']"
@@ -160,7 +274,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <h2>Deck</h2>
+                    <h3>Deck</h3>
                 </div>
             </div>
             <div class="row">
@@ -197,19 +311,48 @@
             </div>
             <div class="row py-5">
                 <div class="col-12">
-                    <h2 id="deck-definition">Deck definition</h2>
+                    <h3 id="deck-definition">Deck definition</h3>
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                This is the code that defines your deck. You can copy and paste this
+                                code to share or save your deck. You can also edit it live (which is
+                                currently a bit buggy, so use at your own risk!)
+                            </p>
+                        </div>
+                        <div class="col">
+                            <textarea
+                                :value="userDeck"
+                                @input="parseDeck($event.target.value)"
+                                style="width: 100%; height: 250px;"
+                                onclick="this.focus();this.select()"
+                                :class="{'border-danger user-input-invalid': !isValid}"
+                            >
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row py-3 justify-content-center">
+                <div class="col-10">
+                    <h5>A Note on the Type</h5>
                     <p>
-                        This is the code that defines your deck. You can copy and paste this
-                        code to share or save your deck. You can also edit it live (which is
-                        currently a bit buggy, so use at your own risk!)
+                        The real Unmatched cards are set in
+                        <a href="https://www.typography.com/fonts/knockout/overview">Knockout</a> by Hoefler&Co.
+                        As beautiful a typeface as it is, I decided to forego the licensing fee and
+                        use free alternatives.
                     </p>
-                    <textarea
-                        :value="userDeck"
-                        @input="parseDeck($event.target.value)"
-                        style="width: 100%;"
-                        :class="{'border-danger user-input-invalid': !isValid}"
-                    >
-                    </textarea>
+                    <p>
+                        The headings are set in
+                        <a href="https://www.fontsquirrel.com/fonts/bebas-neue">Bebas Neue Regular</a>
+                        Unfortunately, the free version of Bebas Neue doesn't have lowercase glyphs, so places
+                        that require them use
+                        <a href="https://www.theleagueofmoveabletype.com/league-gothic">League Gothic Regular</a>
+                        instead. Last but not least, the card descriptions are set in
+                        <a href="https://www.fontsquirrel.com/fonts/archivo-narrow">Archivo Narrow Regular</a>
+                        for legibility at small sizes.
+                    </p>
                 </div>
             </div>
         </div>
@@ -533,6 +676,7 @@ export default {
             justify-content: center;
             flex-direction: column;
             text-align: center;
+            user-select: none;
 
             font-size: 32mm;
         }
