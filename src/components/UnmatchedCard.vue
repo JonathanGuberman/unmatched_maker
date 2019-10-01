@@ -534,7 +534,6 @@ export default {
     .boost-circle {
         background: #FFF;
         .boost-value {
-            user-select: none;
             color: #000;
         }
     }
@@ -592,7 +591,7 @@ export default {
         color: #FFF;
         padding-top: 0.1mm;
         position: relative;
-
+        user-select: none;
         display: block;
         font-size: 1.17em;
         margin-block-start: 1em;
