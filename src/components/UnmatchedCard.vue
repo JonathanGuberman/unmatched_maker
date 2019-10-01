@@ -44,9 +44,9 @@
                 <div class="character-name"
 
                     :contenteditable="isEditable"
+                    @input="resizeCanton"
                     @blur="updateEditableText('characterName', $event)"
                     @keypress.13="$event.preventDefault(); $event.target.blur()"
-                    style="min-width: 100%; min-height: 6mm;"
                 >
                 {{characterName}}
                 </div>
@@ -203,11 +203,11 @@ export default {
             return {}
         },
     },
-    watch: {
-        'characterName': function() {
-            this.resizeCanton();
-        }
-    },
+    // watch: {
+    //     'characterName': function() {
+    //         this.resizeCanton();
+    //     }
+    // },
     mounted: function() {
         this.$nextTick(() =>{
             setTimeout(() => this.resizeCanton(), 200);
@@ -231,7 +231,8 @@ export default {
             // triangle height: 3.3mm
             // name panel full height: 29.1mm
             // region full height: 47mm
-            const width = this.$el.querySelector('.character-name').scrollWidth;
+            const characterName = this.$el.querySelector('.character-name')
+            const width = characterName.scrollWidth;
             // Need this to avoid zero width sometimes
             if (width) {
                 const cantonHeight = this.$el.querySelector('.upper-left').scrollHeight;
@@ -239,9 +240,11 @@ export default {
                 const mmToPixels = 47/cantonHeight;
                 const newAdjust = -22.1 + width * mmToPixels
                 if (newAdjust <= 0) {
+                    characterName.style['transform'] =`rotate(-90deg) scaleX(1)`;
                     this.cantonAdjust = -22.1 + width * mmToPixels;
                 } else {
                     this.cantonAdjust = 0;
+                    characterName.style['transform'] =`rotate(-90deg) scaleX(${90/width})`;
                 }
             }
 
@@ -259,6 +262,11 @@ export default {
 @scheme-yellow: #FCBD71;
 @background-beige: #F7EADB;
 
+@editable-glow: 2px 2px rgba(0, 192, 255, 0.5),
+                        2px -2px rgba(0, 192, 255, 0.5),
+                        -2px 2px rgba(0, 192, 255, 0.5),
+                        -2px -2px rgba(0, 192, 255, 0.5);
+
 @corner: 1.5mm;
 @border-width: 0.8mm;
 @upper-left-width: 10mm;
@@ -273,6 +281,7 @@ export default {
 }
 
 .editable {
+
     &:hover {
         // .editor {
         //     visibility: visible;
@@ -295,6 +304,10 @@ export default {
             width: 100%;
             font-family: initial;
             visibility: hidden;
+        }
+
+        &:hover {
+            box-shadow: @editable-glow;
         }
 
         &:hover input {
@@ -328,6 +341,10 @@ export default {
             visibility: hidden;
         }
 
+        &:hover {
+            text-shadow: @editable-glow;
+        }
+
         &:hover .editor {
             visibility: visible;
         }
@@ -342,6 +359,10 @@ export default {
             height: 18mm;
             visibility: hidden;
             opacity: 1;
+        }
+
+        &:hover {
+            text-shadow: @editable-glow;
         }
 
         &:hover .editor {
@@ -359,9 +380,9 @@ export default {
             left: 0mm;
         }
 
-        // &:hover {
-        //     transform: scale(2);
-        // }
+        &:hover {
+            text-shadow: @editable-glow;
+        }
 
         &:hover .editor {
             visibility: visible;
@@ -377,6 +398,12 @@ export default {
             cursor: text;
             display: block;
         }
+    }
+
+    .character-name:hover,
+    .card-title:hover,
+    .card-text:hover {
+        box-shadow: @editable-glow;
     }
 }
 
