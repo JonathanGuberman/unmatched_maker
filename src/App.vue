@@ -178,7 +178,7 @@
     {
       "title": "Auto-resizing text",
       "type": "scheme",
-      "characterName": "SQUISHED  NAME",
+      "characterName": "SQUISHED NAME",
       "value": 2,
       "boost": 1,
       "basicText": "Try typing a long name in the upper left corner, or for the Hero and Sidekick names on the character card. The text and area should resize as needed.",
@@ -300,7 +300,7 @@
                         />
                     </ZoomBox>
                 </div>
-                <div class="col-auto py-3" v-for="(_, index) in remainingCards">
+                <div class="col-auto py-3" v-for="(_, index) in remainingCards" :key="index">
                     <div v-if="index === 0" class="unmatched-card blank" @click="add" style="cursor: pointer;">
                         <i class="fas fa-plus-circle"></i>
                     </div>

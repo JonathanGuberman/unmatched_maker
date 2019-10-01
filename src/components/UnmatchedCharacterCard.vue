@@ -326,7 +326,7 @@ export default {
         scaleText: function(selector) {
             const heroNameText = (selector instanceof HTMLElement) ?
                 selector : this.$el.querySelector(selector);
-            const computedStyle = window.getComputedStyle(heroNameText);
+            // const computedStyle = window.getComputedStyle(heroNameText);
             const width = heroNameText.offsetWidth;
 
             // Need to check width because for some reason

@@ -215,7 +215,7 @@ export default {
     watch: {
         'characterName': {
             immediate: true,
-            handler: function(newValue) {
+            handler: function() {
                 this.$nextTick(() =>{
                     this.resizeCanton();
                 })
