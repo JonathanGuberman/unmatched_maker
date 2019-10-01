@@ -28,6 +28,7 @@
             </div>
             <div class="upper-left icon">
                 <div v-if="isEditable" class="editor" @click="updateCardType">
+                    <UnmatchedCardIcon :cardType="cardType" class="unmatched-icon"/>
                 </div>
                 <div v-if="cardType !== 'scheme'" class="value">
                     {{cardValue}}
@@ -132,12 +133,14 @@
 
 <script>
 import EditorUpDownButtons from '@/components/EditorUpDownButtons.vue'
+import UnmatchedCardIcon from '@/components/UnmatchedCardIcon.vue'
 import editable from '@/mixins/editable.js'
 
 export default {
     name: 'UnmatchedCard',
     components: {
-        EditorUpDownButtons
+        EditorUpDownButtons,
+        UnmatchedCardIcon,
     },
     mixins: [editable],
     data: function() {
@@ -293,6 +296,20 @@ export default {
         }
     }
 
+    .icon.editor {
+        height: 50%;
+    }
+
+    .unmatched-icon {
+        cursor: pointer;
+        &:hover svg {
+            filter: drop-shadow(2px 2px rgba(0, 192, 255, 0.5))
+                drop-shadow(2px -2px rgba(0, 192, 255, 0.5))
+                drop-shadow(-2px 2px rgba(0, 192, 255, 0.5))
+                drop-shadow(-2px -2px rgba(0, 192, 255, 0.5));
+        }
+    }
+
     .upper-left.character {
         cursor: vertical-text;
     }
@@ -315,8 +332,14 @@ export default {
         }
     }
 
-    .icon {
+    /deep/ .unmatched-icon {
         cursor: pointer;
+        &:hover svg {
+            filter: drop-shadow(2px 2px rgba(0, 192, 255, 0.5))
+                drop-shadow(2px -2px rgba(0, 192, 255, 0.5))
+                drop-shadow(-2px 2px rgba(0, 192, 255, 0.5))
+                drop-shadow(-2px -2px rgba(0, 192, 255, 0.5));
+        }
     }
 
     /deep/ .editor {
@@ -471,48 +494,21 @@ export default {
     .canton {
         fill: @versatile-violet;
     }
-    .icon{
-        position: absolute;
-        background-image: url("~@/assets/images/versatile.png");
-        background-repeat: no-repeat;
-        background-size: 6mm;
-        background-position: 1.7mm 1.4mm;
-    }
 }
 
 .attack {
     .canton {
         fill: @attack-red;
     }
-    .icon{
-        background-image: url("~@/assets/images/attack.png");
-        background-repeat: no-repeat;
-        background-size: 6.6mm;
-        background-position: 1.7mm 1.4mm;
-    }
 }
 .scheme {
     .canton {
         fill: @scheme-yellow;
     }
-    .icon{
-        background-image: url("~@/assets/images/scheme.png");
-        background-repeat: no-repeat;
-        background-size: 3.9mm;
-        background-position: center 2mm;
-    }
 }
 .defence {
     .canton {
         fill: @defence-blue;
-    }
-    .icon{
-        background-image: url("~@/assets/images/defence.png");
-        background-repeat: no-repeat;
-        background-size: 5.3mm;
-        // background-position: 2.5mm 1.4mm;
-        background-position-x: center;
-        background-position-y: 1.4mm;
     }
 }
 
