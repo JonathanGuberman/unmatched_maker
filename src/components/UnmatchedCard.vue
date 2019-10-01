@@ -14,11 +14,11 @@
                 <svg width="100%" height="100%" viewBox="0 0 10.8 47">
                     <polygon
                         class="border"
-                        points="0,0 10.8,0 10.8,43.7 5,47 0,44.2"
+                        :points="`0,0 10.8,0 10.8,${43.7 + cantonAdjust} 5,${47 + cantonAdjust} 0,${44.2 + cantonAdjust}`"
                     />
                     <polygon
                         class="name-panel"
-                        points="0,14.2 10,14.2 10,43.3 5,46.2 0,43.3"
+                        :points="`0,14.2 10,14.2 10,${43.3 + cantonAdjust} 5,${46.2 + cantonAdjust} 0,${43.3 + cantonAdjust}`"
                     />
                     <polygon
                         class="canton"
@@ -40,14 +40,15 @@
                     />
                 </div>
             </div>
-            <div class="upper-left character">
+            <div class="upper-left character" @click="focusEditableText">
                 <div class="character-name"
-                    v-text="characterName"
+
                     :contenteditable="isEditable"
                     @blur="updateEditableText('characterName', $event)"
                     @keypress.13="$event.preventDefault(); $event.target.blur()"
                     style="min-width: 100%; min-height: 6mm;"
                 >
+                {{characterName}}
                 </div>
             </div>
             <div class="inner-bottom">
@@ -139,6 +140,11 @@ export default {
         EditorUpDownButtons
     },
     mixins: [editable],
+    data: function() {
+        return {
+            cantonAdjust: 0,
+        }
+    },
     props: {
         deckProperties: {
             type: Object,
@@ -152,7 +158,7 @@ export default {
             default: 2
         },
         characterName: {
-            default: "Any"
+            type: String
         },
         boostValue: {
             type: Number,
@@ -195,7 +201,17 @@ export default {
                 }
             }
             return {}
+        },
+    },
+    watch: {
+        'characterName': function() {
+            this.resizeCanton();
         }
+    },
+    mounted: function() {
+        this.$nextTick(() =>{
+            setTimeout(() => this.resizeCanton(), 200);
+        });
     },
     methods: {
         updateCardType: function () {
@@ -210,6 +226,26 @@ export default {
 
             this.$emit('update:cardType', newType);
         },
+        resizeCanton: function () {
+            // text region offset: 17.1mm (not needed?)
+            // triangle height: 3.3mm
+            // name panel full height: 29.1mm
+            // region full height: 47mm
+            const width = this.$el.querySelector('.character-name').scrollWidth;
+            // Need this to avoid zero width sometimes
+            if (width) {
+                const cantonHeight = this.$el.querySelector('.upper-left').scrollHeight;
+
+                const mmToPixels = 47/cantonHeight;
+                const newAdjust = -22.1 + width * mmToPixels
+                if (newAdjust <= 0) {
+                    this.cantonAdjust = -22.1 + width * mmToPixels;
+                } else {
+                    this.cantonAdjust = 0;
+                }
+            }
+
+        }
     }
 }
 </script>
@@ -248,7 +284,7 @@ export default {
         }
     }
 
-    .character-name {
+    .upper-left.character {
         cursor: vertical-text;
     }
 
@@ -364,6 +400,8 @@ export default {
         overflow: visible;
 
         .value {
+            user-select: none;
+
             margin: 7.5mm 0 0;
             color: #FFF;
             font-size:7.8mm;
@@ -473,6 +511,7 @@ export default {
     .boost-circle {
         background: #FFF;
         .boost-value {
+            user-select: none;
             color: #000;
         }
     }
@@ -570,6 +609,8 @@ export default {
     .card-text {
         flex: 1;
         overflow: scroll;
+        scrollbar-width: none;
+        &::-webkit-scrollbar { display: none; };
 
         .empty {
             display: none;
@@ -595,6 +636,8 @@ export default {
 
         .card-quantity {
             position: relative;
+            user-select: none;
+
             font-family: League Gothic, sans-serif;
             border-left: 0.2mm solid #FFF;
             padding-left: 0.5mm;

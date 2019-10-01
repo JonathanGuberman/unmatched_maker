@@ -10,6 +10,7 @@
                         <span
                             v-text="heroName" class="scale-text"
                             :contenteditable="isEditable"
+                            @input="scaleText($event.target)"
                             @blur="updateEditableText('heroName', $event)"
                             @keypress.13="$event.preventDefault(); $event.target.blur()"
                         ></span>
@@ -100,16 +101,18 @@
                             </g>
                         </svg>
                     </div>
-                    <div class="value">
-                        {{heroMove}}
+                    <div class="move-editor">
+                        <div class="value">
+                            {{heroMove}}
+                        </div>
+                        <EditorUpDownButtons
+                            v-if="isEditable"
+                            class="editor"
+                            :value="heroMove"
+                            @input="$emit('update:heroMove', $event)"
+                            :minValue="1"
+                        />
                     </div>
-                    <EditorUpDownButtons
-                        v-if="isEditable"
-                        class="editor"
-                        :value="heroMove"
-                        @input="$emit('update:heroMove', $event)"
-                        :minValue="1"
-                    />
                     <div class="title">
                         <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2790 12100" preserveAspectRatio="xMidYMid meet">
                             <g stroke="none">
@@ -132,6 +135,7 @@
                         <span
                             v-text="sidekickName" class="scale-text"
                             :contenteditable="isEditable"
+                            @input="scaleText($event.target)"
                             @blur="updateEditableText('sidekickName', $event)"
                             @keypress.13="$event.preventDefault(); $event.target.blur()"
                         ></span>
@@ -298,8 +302,12 @@ export default {
 
             this.initialWidth = width - paddingLeft - paddingRight;
 
-            this.scaleText('.hero .name .xl.content span');
-            this.scaleText('.sidekick .name .xl.content span');
+            this.$nextTick(() =>{
+                setTimeout(() => {
+                    this.scaleText('.hero .name .xl.content span');
+                    this.scaleText('.sidekick .name .xl.content span');
+                }, 200);
+            });
         });
     },
     watch: {
@@ -316,7 +324,9 @@ export default {
     },
     methods: {
         scaleText: function(selector) {
-            const heroNameText = this.$el.querySelector(selector);
+            const heroNameText = (selector instanceof HTMLElement) ?
+                selector : this.$el.querySelector(selector);
+            const computedStyle = window.getComputedStyle(heroNameText);
             const width = heroNameText.offsetWidth;
 
             // Need to check width because for some reason
@@ -325,7 +335,6 @@ export default {
             if (width){
                 heroNameText.style['transform'] = 'scaleX(1)';
                 if (width > this.initialWidth) {
-                    console.debug(`Setting ${width}`);
                     heroNameText.style['transform'] =`scaleX(${this.initialWidth/width})`;
                     heroNameText.style['transform-origin'] = 'left bottom';
                 }
@@ -357,6 +366,10 @@ export default {
 @thick-border-width: 1mm;
 @thin-border-width: 0.4mm;
 @thinner-border-width: 0.2mm;
+@editable-glow: 2px 2px rgba(0, 192, 255, 0.5),
+                        2px -2px rgba(0, 192, 255, 0.5),
+                        -2px 2px rgba(0, 192, 255, 0.5),
+                        -2px -2px rgba(0, 192, 255, 0.5);
 
 @media print {
   * {
@@ -387,6 +400,10 @@ export default {
         cursor: pointer;
     }
 
+    .attack-type:hover img {
+        box-shadow: @editable-glow;
+    }
+
     /deep/ .invalid {
         visibility: hidden;
     }
@@ -407,6 +424,13 @@ export default {
         }
     }
 
+    .move-editor {
+        &:hover {
+            text-shadow: @editable-glow;
+
+        }
+    }
+
     /deep/ .hp {
         .editor {
             height: 18mm;
@@ -416,8 +440,11 @@ export default {
             visibility: hidden;
         }
 
-        &:hover .editor {
-            visibility: visible;
+        &:hover {
+            text-shadow: @editable-glow;
+            .editor {
+                visibility: visible;
+            }
         }
     }
 
@@ -441,6 +468,7 @@ export default {
 
     /deep/ .extra-quantity {
         visibility: hidden;
+        user-select: none;
         position: absolute;
         width: 8mm;
         bottom: 0;
@@ -463,13 +491,21 @@ export default {
             }
         }
 
+        &:hover {
+            text-shadow: @editable-glow;
+        }
+
         &:hover .editor {
             visibility: visible;
         }
     }
 
-    .name .content {
+    .content {
         cursor: text;
+
+        &:hover {
+            box-shadow: @editable-glow;
+        }
     }
 }
 
@@ -601,6 +637,7 @@ export default {
     div {
         color: var(--inner-border-colour);
 
+        user-select: none;
         bottom: 1mm;
         left : 3.4mm;
         white-space: nowrap;
@@ -665,6 +702,7 @@ export default {
     }
 
     .value {
+        user-select: none;
         position: relative;
         height: 20mm;
         text-align: center;
@@ -715,6 +753,7 @@ export default {
     }
 
     .quantity {
+        user-select: none;
         float: left;
         position: relative;
         width: 12.1mm;
@@ -737,6 +776,7 @@ export default {
 }
 
 .hp {
+    user-select: none;
     position: relative;
     text-align: center;
     font-size: 3.8mm;

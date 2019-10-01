@@ -1,7 +1,7 @@
 <template>
     <div id="app" :style="userColours" :class="[deck.appearance.isPNP ? 'printnplay' : '']">
         <div class="no-print container">
-            <div class="row py-3">
+            <div class="row py-3 justify-content-center">
                 <div class="col-10">
                     <h1>Unmatched Deck Creator</h1>
                     <p>
@@ -27,24 +27,41 @@
                     </p>
                 </div>
             </div>
-            <div class="row py-3">
-                <div class="col-auto">
-                    <h2>Getting started</h2>
-                    <p>
-                        Edit any text on the card by clicking on it and typing.
-                        For numbers, when you mouse over them buttons will appear
-                        allowing you to adjust them.
-                    </p>
-                    <p>
-                        If you want more than one of the same card,
-                        change the number in the lower right corner and it
-                        will be duplicated automatically. Any changes you make
-                        to any of the copies will get changed on all of the copies
-                        of that card.
-                    </p>
 
+            <div class="row py-3">
+                <div class="col">
+                    <h2>Editing cards</h2>
+                    <p>
+                        Edit any text on a card by clicking on it and typing.
+                        For numbers, click on the "increase" and "decease"
+                        buttons that appear when you mouse over them.
+                    </p>
+                </div>
+                <div class="col">
+                    <h2>Printing</h2>
+                    <p>
+                        What you see is not quite what you get: when you print,
+                        everything except the cards will be hidden, and the cards
+                        will be next to each other to make cutting them out easier.
+                    </p>
+                    <p>
+                        You can try printing to PDF for a file you can save and share.
+                    </p>
+                    <p>
+                        Firefox users note: you will need to select "Print Background Colors"
+                        and "Print Background Images" for everything to appear correctly.
+                        This is in the "Print" dialogue on Macs and in the "Page Settings"
+                        dialogue on Windows.
+                    </p>
+                </div>
+                <div class="col">
+                    <h2>Saving and sharing</h2>
+                    <p>
+
+                    </p>
                 </div>
             </div>
+
             <div class="row py-3">
                 <div class="col-auto">
                     <UnmatchedCharacterCard
@@ -76,19 +93,17 @@
                                     As close as possible to the real thing without having
                                     Oliver Barrett do the art for you.
                                 </p>
-                                <p>
-                                    <div class="form-group">
-                                        <label>
-                                            Highlight colour
-                                        </label>
-                                        <input
-                                            v-model="deck.appearance.highlightColour"
-                                            :disabled="deck.appearance.isPNP"
-                                            class="form-control"
-                                            type="color"
-                                        >
-                                    </div>
-                                </p>
+                                <div class="form-group">
+                                    <label>
+                                        Highlight colour
+                                    </label>
+                                    <input
+                                        v-model="deck.appearance.highlightColour"
+                                        :disabled="deck.appearance.isPNP"
+                                        class="form-control"
+                                        type="color"
+                                    >
+                                </div>
                             </div>
                         </div>
                         <div class="card"
@@ -120,27 +135,45 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-auto py-3" v-for="card in fullDeck">
-                    <UnmatchedCard
-                        :isEditable="true"
-                        :deckProperties="deck"
-                        :cardType.sync="card.data.type"
-                        :cardValue.sync="card.data.value"
-                        :cardTitle.sync="card.data.title"
-                        :characterName.sync="card.data.characterName"
-                        :boostValue.sync="card.data.boost"
-                        :basicText.sync="card.data.basicText"
-                        :immediateText.sync="card.data.immediateText"
-                        :duringText.sync="card.data.duringText"
-                        :afterText.sync="card.data.afterText"
-                        :imageUrl.sync="card.data.imageUrl"
-                        :cardQuantity.sync="card.data.quantity"
-                        :key="card.id"
-                        class="float-left"
-                    />
+                <div class="col-auto py-3" v-for="card in fullDeck" :key="card.id">
+                    <ZoomBox>
+                        <UnmatchedCard
+                            :isEditable="true"
+                            :deckProperties="deck"
+                            :cardType.sync="card.data.type"
+                            :cardValue.sync="card.data.value"
+                            :cardTitle.sync="card.data.title"
+                            :characterName.sync="card.data.characterName"
+                            :boostValue.sync="card.data.boost"
+                            :basicText.sync="card.data.basicText"
+                            :immediateText.sync="card.data.immediateText"
+                            :duringText.sync="card.data.duringText"
+                            :afterText.sync="card.data.afterText"
+                            :imageUrl.sync="card.data.imageUrl"
+                            :cardQuantity.sync="card.data.quantity"
+                            class="float-left"
+                        />
+                    </ZoomBox>
                 </div>
                 <div class="col">
                     <button @click="add">Add card</button>
+                </div>
+            </div>
+            <div class="row py-5">
+                <div class="col-12">
+                    <h2>Deck definition</h2>
+                    <p>
+                        This is the code that defines your deck. You can copy and paste this
+                        code to share or save your deck. You can also edit it live (which is
+                        currently a bit buggy, so use at your own risk!)
+                    </p>
+                    <textarea
+                        :value="userDeck"
+                        @input="parseDeck($event.target.value)"
+                        style="width: 100%;"
+                        :class="{'border-danger user-input-invalid': !isValid}"
+                    >
+                    </textarea>
                 </div>
             </div>
         </div>
@@ -182,12 +215,14 @@
 <script>
 import UnmatchedCard from '@/components/UnmatchedCard.vue'
 import UnmatchedCharacterCard from '@/components/UnmatchedCharacterCard.vue'
+import ZoomBox from '@/components/ZoomBox.vue'
 
 export default {
     name: 'app',
     components: {
         UnmatchedCard,
-        UnmatchedCharacterCard
+        UnmatchedCharacterCard,
+        ZoomBox
     },
     data: function () {
         return {
@@ -214,18 +249,20 @@ export default {
                 },
                 cards: [],
             },
+            userDeck: '',
+            isValid: true,
         }
     },
     computed: {
         fullDeck: function() {
             var fullDeck = [];
-            this.deck.cards.forEach(card => {
+            this.deck.cards.forEach((card, outerIndex) => {
                 var quantity = parseInt(card.quantity) || 1;
                 quantity = quantity > 0 ? quantity : 1;
-                [...Array(quantity)].forEach((_, index) => {
+                [...Array(quantity)].forEach((_, innerIndex) => {
                     fullDeck.push({
                         data: card,
-                        id: index
+                        id: `${outerIndex}_${innerIndex}`
                     });
                 });
             });
@@ -239,6 +276,29 @@ export default {
                 '--contrast-colour': this.isDarkText(this.deck.appearance.highlightColour),
             }
         }
+    },
+    watch: {
+        'deck': {
+            handler: function() {
+                this.userDeck = JSON.stringify(this.deck, null, 2);
+                this.localStorageSave();
+            },
+            deep: true
+        }
+    },
+    mounted: function() {
+        this.$nextTick(() => {
+            if (localStorage.getItem('unmatched-deck')) {
+                const deck = JSON.parse(localStorage.getItem('unmatched-deck'));
+                this.deck.name = deck.name
+                this.deck.appearance = deck.appearance
+                this.deck.hero = deck.hero
+                this.deck.sidekick = deck.sidekick
+                deck.cards.forEach((card, index) => {
+                    this.$set(this.deck.cards, index, card);
+                })
+            }
+        });
     },
     methods: {
         add: function() {
@@ -255,8 +315,19 @@ export default {
                     afterText: "",
                     imageUrl: '',
                     quantity: 1,
-                    wieldedBy: 'any',
                 })
+        },
+        parseDeck: function(value) {
+            this.userDeck = value;
+            try {
+                this.deck = JSON.parse(value);
+                this.isValid = true;
+            } catch {
+                this.isValid = false;
+            }
+        },
+        localStorageSave: function() {
+            localStorage.setItem('unmatched-deck', JSON.stringify(this.deck));
         },
         hexToRgb: function(hex) {
           // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -394,5 +465,9 @@ export default {
 
     .appearance .card {
         cursor: pointer;
+    }
+
+    .user-input-invalid {
+        border-width: 3px;
     }
 </style>
