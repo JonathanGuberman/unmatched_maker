@@ -1,6 +1,12 @@
 <template>
     <div class="unmatched-card" :class="[cardType, isEditable ? 'editable':'']">
         <div class="main-wrapper">
+            <div v-if="isEditable" class="delete-button um-invisible">
+                <span @click="$emit('delete:card', $event)" class="fa-layers fa-fw fa-2x">
+                    <i class="fas fa-circle"></i>
+                    <i class="fa-inverse fas fa-times" data-fa-transform="shrink-6"></i>
+                </span>
+            </div>
             <div class="inner-top" :style="backgroundImage">
                 <input
                     v-if="isEditable"
@@ -27,7 +33,7 @@
                 </svg>
             </div>
             <div class="upper-left icon">
-                <div v-if="isEditable" class="editor" @click="updateCardType">
+                <div class="icon-wrapper" :class="{'editor': isEditable}" @click="updateCardType">
                     <UnmatchedCardIcon :cardType="cardType" class="unmatched-icon"/>
                 </div>
                 <div v-if="cardType !== 'scheme'" class="value">
@@ -206,11 +212,11 @@ export default {
             return {}
         },
     },
-    // watch: {
-    //     'characterName': function() {
-    //         this.resizeCanton();
-    //     }
-    // },
+    watch: {
+        'characterName': function() {
+            this.$nextTick(() =>{this.resizeCanton();})
+        }
+    },
     mounted: function() {
         this.$nextTick(() =>{
             setTimeout(() => this.resizeCanton(), 200);
@@ -218,16 +224,18 @@ export default {
     },
     methods: {
         updateCardType: function () {
-            var newType = 'versatile';
-            if (this.cardType === 'versatile') {
-                newType = 'attack';
-            } else if (this.cardType === 'attack') {
-                newType = 'defence';
-            } else if (this.cardType === 'defence') {
-                newType = 'scheme';
-            }
+            if (this.isEditable) {
+                var newType = 'versatile';
+                if (this.cardType === 'versatile') {
+                    newType = 'attack';
+                } else if (this.cardType === 'attack') {
+                    newType = 'defence';
+                } else if (this.cardType === 'defence') {
+                    newType = 'scheme';
+                }
 
-            this.$emit('update:cardType', newType);
+                this.$emit('update:cardType', newType);
+            }
         },
         resizeCanton: function () {
             // text region offset: 17.1mm (not needed?)
@@ -293,6 +301,18 @@ export default {
 
         .um-invisible {
             opacity: 1;
+        }
+    }
+
+    .delete-button {
+        color: #CCC;
+        cursor: pointer;
+        position: absolute;
+        right: -6mm;
+        top: -6mm;
+        z-index: 100;
+        &:hover{
+            color: red;
         }
     }
 
@@ -680,5 +700,13 @@ export default {
     height: 42.9mm + @border-width;
     width: @upper-left-width + @border-width;
     // border-top-left-radius: @corner;
+}
+
+.icon-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
 }
 </style>

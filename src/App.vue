@@ -30,11 +30,20 @@
 
             <div class="row py-3">
                 <div class="col">
-                    <h2>Editing cards</h2>
+                    <h2>Editing</h2>
+                    <p>
+                        Move your mouse over the cards to see what you can edit.
+                        Anything editable will be highlighted when you mouse over it.
+                    </p>
                     <p>
                         Edit any text on a card by clicking on it and typing.
                         For numbers, click on the "increase" and "decease"
                         buttons that appear when you mouse over them.
+                    </p>
+                    <p>
+                        You can create multiple copies of a card by changing the quantity
+                        in the lower right corner. These cards remain linked;
+                        modifications to any one will affect all of them!
                     </p>
                 </div>
                 <div class="col">
@@ -45,10 +54,13 @@
                         will be next to each other to make cutting them out easier.
                     </p>
                     <p>
-                        You can try printing to PDF for a file you can save and share.
+                        To ensure correct printing, be sure to <strong>set your
+                        paper orientation to "Landscape"</strong>. You can save to a file
+                        using the "Save to PDF" option in your print dialogue.
+
                     </p>
                     <p>
-                        Firefox users note: you will need to select "Print Background Colors"
+                        <em>Firefox users note</em>: you will need to select "Print Background Colors"
                         and "Print Background Images" for everything to appear correctly.
                         This is in the "Print" dialogue on Macs and in the "Page Settings"
                         dialogue on Windows.
@@ -57,13 +69,25 @@
                 <div class="col">
                     <h2>Saving and sharing</h2>
                     <p>
-
+                        As you work your deck is automatically saved to your browser's local storage;
+                        if you return in the same browser on the same computer, your deck should
+                        still be there.
+                    </p>
+                    <p>
+                        If you want to make more than one deck or share decks with friends,
+                        scroll to the <a href="#deck-definition">Deck Definition</a> section.
+                        There you can copy and paste the code that defines your deck.
+                    </p>
+                    <p>
+                        (In the future I hope to have a more readable format for sharing, but
+                        for now JSON will have to do.)
                     </p>
                 </div>
             </div>
 
             <div class="row py-3">
                 <div class="col-auto">
+                    <h2>Character</h2>
                     <UnmatchedCharacterCard
                         :isEditable="true"
                         :heroName.sync="deck.hero.name"
@@ -135,7 +159,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-auto py-3" v-for="card in fullDeck" :key="card.id">
+                <div class="col">
+                    <h2>Deck</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto py-3" v-for="(card, index) in fullDeck" :key="card.id">
                     <ZoomBox>
                         <UnmatchedCard
                             :isEditable="true"
@@ -151,17 +180,24 @@
                             :afterText.sync="card.data.afterText"
                             :imageUrl.sync="card.data.imageUrl"
                             :cardQuantity.sync="card.data.quantity"
-                            class="float-left"
+                            class="float-left shadow"
+                            :class="{'border-danger': index >= 30}"
+                            @delete:card="$delete(deck.cards, card.origIndex)"
                         />
                     </ZoomBox>
                 </div>
-                <div class="col">
-                    <button @click="add">Add card</button>
+                <div class="col-auto py-3" v-for="(_, index) in remainingCards">
+                    <div v-if="index === 0" class="unmatched-card blank" @click="add" style="cursor: pointer;">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div v-else class="unmatched-card blank">
+                        {{index + fullDeck.length + 1}}
+                    </div>
                 </div>
             </div>
             <div class="row py-5">
                 <div class="col-12">
-                    <h2>Deck definition</h2>
+                    <h2 id="deck-definition">Deck definition</h2>
                     <p>
                         This is the code that defines your deck. You can copy and paste this
                         code to share or save your deck. You can also edit it live (which is
@@ -196,7 +232,7 @@
                 :cardType="card.data.type"
                 :cardValue="card.data.value"
                 :cardTitle="card.data.title"
-                characterName="Any"
+                :characterName="card.data.characterName"
                 :boostValue="card.data.boost"
                 :basicText="card.data.basicText"
                 :immediateText="card.data.immediateText"
@@ -262,11 +298,16 @@ export default {
                 [...Array(quantity)].forEach((_, innerIndex) => {
                     fullDeck.push({
                         data: card,
-                        id: `${outerIndex}_${innerIndex}`
+                        id: `${outerIndex}_${innerIndex}`,
+                        origIndex: outerIndex,
                     });
                 });
             });
             return fullDeck
+        },
+        remainingCards: function() {
+            const remainingCardCount = this.fullDeck.length < 30 ? 30 - this.fullDeck.length : 0;
+            return [...Array(remainingCardCount)]
         },
         userColours: function() {
             return {
@@ -455,6 +496,17 @@ export default {
         padding: 3mm;
 
         border-radius: 2.5mm;
+        &.blank {
+            background: #EEE;
+            color: #CCC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+
+            font-size: 32mm;
+        }
     }
 
     .unmatched-card, .unmatched-card * {
@@ -469,5 +521,9 @@ export default {
 
     .user-input-invalid {
         border-width: 3px;
+    }
+
+    .border-danger {
+        border-width: 1mm;
     }
 </style>
