@@ -226,6 +226,8 @@
                 :sidekickHp="deck.sidekick.hp"
                 :sidekickQuantity="deck.sidekick.quantity"
                 :sidekickQuote="deck.sidekick.quote"
+                :isEditable="false"
+                class="float-left"
             />
             <UnmatchedCard v-for="card in fullDeck"
                 :deckProperties="deck"
@@ -287,6 +289,7 @@ export default {
             },
             userDeck: '',
             isValid: true,
+            isPrint: false,
         }
     },
     computed: {
@@ -328,6 +331,26 @@ export default {
         }
     },
     mounted: function() {
+        // window.onbeforeprint = (() => {
+        //     this.isPrint = true;
+        // });
+
+        // window.onafterprint = (() => {
+        //     this.isPrint = false;
+        // });
+
+        // window.matchMedia('print').addListener((mql) => {
+        //   if(mql.matches) {
+        //     this.isPrint = true;
+        //   }
+        // });
+
+        // // window.matchMedia('screen').addListener((mql) => {
+        // //   if(mql.matches) {
+        // //     this.isPrint = false;
+        // //   }
+        // // });
+
         this.$nextTick(() => {
             if (localStorage.getItem('unmatched-deck')) {
                 const deck = JSON.parse(localStorage.getItem('unmatched-deck'));
@@ -459,7 +482,11 @@ export default {
     }
 
     .print {
-        display: none;
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        z-index: -9999;
     }
 
     @media print {
@@ -473,6 +500,7 @@ export default {
         }
 
         .print {
+            opacity: 1;
             display: block !important;
 
             .unmatched-card {
@@ -494,6 +522,7 @@ export default {
         height: 88mm;
         background: var(--outer-border-colour);
         padding: 3mm;
+        // border: 1px solid rgba(0,0,0,.125);
 
         border-radius: 2.5mm;
         &.blank {
