@@ -17,10 +17,12 @@
                         a community of fan expansions, this tool allows anybody to
                         create a deck in the style of the real game.
                     </p>
-                    <p>
-                        <strong>This tool is not in any way affiliated with Restoration Games
-                        or Mondo Games.</strong>
-                    </p>
+                    <div class="alert alert-primary">
+                      <strong>This tool is not in any way affiliated with Restoration Games
+                      or Mondo Games.</strong>
+                      The look and design of the cards is a trademark of Restoration Games, LLC
+                      and is used with permission. Decks using this design may not be used for commercial purposes.
+                    </div>
                 </div>
             </div>
 
