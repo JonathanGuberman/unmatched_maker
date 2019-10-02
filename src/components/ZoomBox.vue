@@ -13,14 +13,13 @@ export default {
         return {
             initialWidth: undefined,
             initialHeight: undefined,
-            zoomFactor: 1
         }
     },
     props: {
-        // zoomFactor: {
-        //     type: Number,
-        //     default: 1
-        // }
+        zoomFactor: {
+            type: Number,
+            default: 1
+        }
     },
     computed: {
         zoomHeight: function() {

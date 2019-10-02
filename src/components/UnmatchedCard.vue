@@ -641,6 +641,7 @@ export default {
 
     padding: 2mm 3mm 1mm;
     background: #000;
+    background-image: var(--background-pattern);
     color: #FFF;
     .card-title {
         display: block;

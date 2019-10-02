@@ -581,6 +581,7 @@ export default {
         border-bottom: @thick-border-width solid var(--inner-border-colour);
 
         background: var(--highlight-colour);
+        background-image: var(--background-pattern);
         color: var(--contrast-colour);
 
         .section {

@@ -5,8 +5,9 @@
                 <div class="col-xl-10">
                     <h1>Unmatched Maker</h1>
                     <p>
-                        Unmatched is a board game from Restoration Games
-                        and Mondo Games where players control various iconic
+                        <a href="https://restorationgames.com/unmatched/" target="_blank">Unmatched</a>
+                         is a board game from <a href="https://restorationgames.com/" target="_blank">Restoration Games</a>
+                        and <a href="https://mondotees.com/" target="_blank">Mondo Games</a> where players control various iconic
                         characters in combat against each other.
                         Each character has their own deck with a unique fighting style.
                     </p>
@@ -55,7 +56,7 @@
 
                     </p>
                     <p>
-                        <em>Firefox users note</em>: you will need to select "Print Background Colors"
+                        <em>Firefox users note</em>: you will need to select "Print Background Colours"
                         and "Print Background Images" for everything to appear correctly.
                         This is in the "Print" dialogue on Macs and in the "Page Settings"
                         dialogue on Windows.
@@ -70,7 +71,7 @@
                     </p>
                     <p>
                         If you want to make more than one deck or share decks with friends,
-                        scroll to the <a href="#deck-definition">Deck Definition</a> section.
+                        scroll to the <a href="#deck-definition">Deck definition</a> section.
                         There you can copy and paste the code that defines your deck.
                         In the future I hope to have a more readable format for sharing, but
                         for now JSON will have to do.
@@ -82,7 +83,7 @@
                         <div class="col-7">
                             <p>
                                 Try copying this example deck and pasting it
-                                in the <a href="#deck-definition">Deck Definition</a> area.
+                                in the <a href="#deck-definition">Deck definition</a> area.
                                 As an added bonus, the cards will illustrate some of Unmatched
                                 Maker's features.
                             </p>
@@ -92,8 +93,9 @@
   "name": "",
   "appearance": {
     "isPNP": false,
-    "borderColour": "#dbc6ef",
-    "highlightColour": "#ff7c41"
+    "borderColour": "#d0efc6",
+    "highlightColour": "#ff3a93",
+    "patternName": "Dominos"
   },
   "hero": {
     "name": "Hero",
@@ -187,6 +189,19 @@
       "afterText": "",
       "imageUrl": "",
       "quantity": 1
+    },
+    {
+      "title": "Deleting a card\n",
+      "type": "attack",
+      "characterName": "Any",
+      "value": 5,
+      "boost": 2,
+      "basicText": "",
+      "immediateText": "This has 3 copies.",
+      "duringText": "Delete using the X in the upper right.",
+      "afterText": "All copies will be gone.",
+      "imageUrl": "",
+      "quantity": 3
     }
   ]
 }
@@ -198,26 +213,15 @@
 
             <div class="row py-3">
                 <div class="col-12">
-                    <h2>Deck Editor</h2>
-                </div>
-                <div class="col-auto">
-                    <h3>Character</h3>
-                    <UnmatchedCharacterCard
-                        :isEditable="true"
-                        :heroName.sync="deck.hero.name"
-                        :heroIsRanged.sync="deck.hero.isRanged"
-                        :heroHp.sync="deck.hero.hp"
-                        :heroMove.sync="deck.hero.move"
-                        :heroSpecialAbility.sync="deck.hero.specialAbility"
-                        :sidekickName.sync="deck.sidekick.name"
-                        :sidekickIsRanged.sync="deck.sidekick.isRanged"
-                        :sidekickHp.sync="deck.sidekick.hp"
-                        :sidekickQuantity.sync="deck.sidekick.quantity"
-                        :sidekickQuote.sync="deck.sidekick.quote"
-                    />
+                    <h2>Editor</h2>
                 </div>
                 <div class="col deck-properties">
                     <h3>Appearance</h3>
+                    <div class="form-group">
+                      <label for="zoomControl">Zoom</label>
+                      <input type="range" class="form-control-range" id="zoomControl" min="1" max="2" step="any" v-model.number="zoom">
+                      <small class="text-muted">Does not affect print size</small>
+                    </div>
                     <div class="card-deck appearance">
                         <div class="card"
                             :class="[deck.appearance.isPNP ? 'text-muted' : 'border-primary']"
@@ -229,7 +233,7 @@
                             <div class="card-body">
                                 <p class="card-text">
                                     As close as possible to the real thing without having
-                                    Oliver Barrett do the art for you.
+                                    <a href="https://oliverbarrett.com/" target="_blank">Oliver Barrett</a> do the art for you.
                                 </p>
                                 <div class="form-group">
                                     <label>
@@ -241,6 +245,20 @@
                                         class="form-control"
                                         type="color"
                                     >
+                                </div>
+                                <div class="form-group">
+                                  <label>
+                                    Background pattern
+                                  </label>
+                                  <SvgBackgroundPicker
+                                    :selectedPattern="deck.appearance.patternName"
+                                    :bgColour="deck.appearance.highlightColour"
+                                    @change:background="pattern=$event.backgroundImage"
+                                    @change:pattern="$set(deck.appearance, 'patternName', $event)"
+                                  ></SvgBackgroundPicker>
+                                  <small class="text-muted">
+                                      Patterns by <a href="https://www.heropatterns.com/" target="_blank">Steve Schoger</a>
+                                  </small>
                                 </div>
                             </div>
                         </div>
@@ -271,6 +289,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-auto">
+                    <h3>Character</h3>
+                    <ZoomBox :zoomFactor="zoom">
+                      <UnmatchedCharacterCard
+                          :isEditable="true"
+                          :heroName.sync="deck.hero.name"
+                          :heroIsRanged.sync="deck.hero.isRanged"
+                          :heroHp.sync="deck.hero.hp"
+                          :heroMove.sync="deck.hero.move"
+                          :heroSpecialAbility.sync="deck.hero.specialAbility"
+                          :sidekickName.sync="deck.sidekick.name"
+                          :sidekickIsRanged.sync="deck.sidekick.isRanged"
+                          :sidekickHp.sync="deck.sidekick.hp"
+                          :sidekickQuantity.sync="deck.sidekick.quantity"
+                          :sidekickQuote.sync="deck.sidekick.quote"
+                      />
+                    </ZoomBox>
+                </div>
             </div>
             <div class="row">
                 <div class="col">
@@ -279,7 +315,7 @@
             </div>
             <div class="row">
                 <div class="col-auto py-3" v-for="(card, index) in fullDeck" :key="card.id">
-                    <ZoomBox>
+                    <ZoomBox :zoomFactor="zoom">
                         <UnmatchedCard
                             :isEditable="true"
                             :deckProperties="deck"
@@ -324,8 +360,8 @@
                             <textarea
                                 :value="userDeck"
                                 @input="parseDeck($event.target.value)"
-                                style="width: 100%; height: 250px;"
-                                onclick="this.focus();this.select()"
+                                style="width: 100%; height: 250px; font-family: monospace;"
+                                onclick="this.focus();"
                                 :class="{'border-danger user-input-invalid': !isValid}"
                             >
                             </textarea>
@@ -339,18 +375,17 @@
                     <h5>A Note on the Type</h5>
                     <p>
                         The real Unmatched cards are set in
-                        <a href="https://www.typography.com/fonts/knockout/overview">Knockout</a> by Hoefler&Co.
-                        As beautiful a typeface as it is, I decided to forego the licensing fee and
-                        use free alternatives.
+                        <a href="https://www.typography.com/fonts/knockout/overview" target="_blank">Knockout</a> by Hoefler&Co.
+                        Unmatched Maker uses free alternatives.
                     </p>
                     <p>
                         The headings are set in
-                        <a href="https://www.fontsquirrel.com/fonts/bebas-neue">Bebas Neue Regular</a>
+                        <a href="https://www.fontsquirrel.com/fonts/bebas-neue" target="_blank">Bebas Neue Regular</a>
                         Unfortunately, the free version of Bebas Neue doesn't have lowercase glyphs, so places
                         that require them use
-                        <a href="https://www.theleagueofmoveabletype.com/league-gothic">League Gothic Regular</a>
+                        <a href="https://www.theleagueofmoveabletype.com/league-gothic" target="_blank">League Gothic Regular</a>
                         instead. Last but not least, the card descriptions are set in
-                        <a href="https://www.fontsquirrel.com/fonts/archivo-narrow">Archivo Narrow Regular</a>
+                        <a href="https://www.fontsquirrel.com/fonts/archivo-narrow" target="_blank">Archivo Narrow Regular</a>
                         for legibility at small sizes.
                     </p>
                 </div>
@@ -397,13 +432,15 @@
 import UnmatchedCard from '@/components/UnmatchedCard.vue'
 import UnmatchedCharacterCard from '@/components/UnmatchedCharacterCard.vue'
 import ZoomBox from '@/components/ZoomBox.vue'
+import SvgBackgroundPicker from '@/components/SvgBackgroundPicker'
 
 export default {
     name: 'app',
     components: {
         UnmatchedCard,
         UnmatchedCharacterCard,
-        ZoomBox
+        ZoomBox,
+        SvgBackgroundPicker
     },
     data: function () {
         return {
@@ -413,6 +450,7 @@ export default {
                     isPNP: false,
                     borderColour: "#E0EFF0",
                     highlightColour: "#F07838",
+                    patternName: '',
                 },
                 hero: {
                     name: "Hero",
@@ -433,6 +471,8 @@ export default {
             userDeck: '',
             isValid: true,
             isPrint: false,
+            zoom: 1,
+            pattern: 'none',
         }
     },
     computed: {
@@ -461,6 +501,7 @@ export default {
                 '--outer-border-colour': '#F7EADB',
                 '--highlight-colour': this.deck.appearance.highlightColour,
                 '--contrast-colour': this.isDarkText(this.deck.appearance.highlightColour),
+                '--background-pattern': this.pattern,
             }
         }
     },
@@ -698,5 +739,9 @@ export default {
 
     .border-danger {
         border-width: 1mm;
+    }
+
+    .deck-properties {
+      min-width: 600px;
     }
 </style>
