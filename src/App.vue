@@ -337,12 +337,14 @@
                     </ZoomBox>
                 </div>
                 <div class="col-auto py-3" v-for="(_, index) in remainingCards" :key="index">
-                    <div v-if="index === 0" class="unmatched-card blank" @click="add" style="cursor: pointer;">
-                        <i class="fas fa-plus-circle"></i>
-                    </div>
-                    <div v-else class="unmatched-card blank">
-                        {{index + fullDeck.length + 1}}
-                    </div>
+                    <ZoomBox :zoomFactor="zoom">
+                      <div v-if="index === 0" class="unmatched-card blank" @click="add" style="cursor: pointer;">
+                          <i class="fas fa-plus-circle"></i>
+                      </div>
+                      <div v-else class="unmatched-card blank">
+                          {{index + fullDeck.length + 1}}
+                      </div>
+                    </ZoomBox>
                 </div>
             </div>
             <div class="row py-5">
