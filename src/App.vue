@@ -209,8 +209,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-xl-10">
+                  <h2>Deck design principles</h2>
+                  <p>Roman at <a href="http://www.geektopiagames.com/" target="_blank">Geektopia Games</a>
+                    has written an article describing Unmatched
+                    <a href="http://www.geektopiagames.com/games/unmatched/unmatched-deck-structure/" target="_blank">deck structure</a>.
+                    He also has other <a href="http://www.geektopiagames.com/games/unmatched/" target="_blank">Unmatched articles</a>
+                    that are extremely useful.
+                  </p>
+                  <p>
+                    The place to discuss Unmatched fan decks seems to be the
+                    BoardGameGeek Unmatched Vol. 1
+                    <a href="https://boardgamegeek.com/forum/2870415/unmatched-battle-legends-volume-one/variants" target="_blank">
+                      Variant forum
+                    </a>. Go there to share your decks or bounce your ideas around.
+                  </p>
+                </div>
+                <div class="col-xl-10">
+                  <h2>Bugs and feature requests</h2>
+                  <p>The project files for Unmatched Maker are available in the
+                    <a href="https://github.com/JonathanGuberman/unmatched_maker/" target="_blank">GitHub repo</a>.
+                    Please post any bugs or feature requests on the
+                    <a href="https://github.com/JonathanGuberman/unmatched_maker/issues" target=_blank>Issues</a>
+                    page there.
+                  </p>
+                </div>
             </div>
-
             <div class="row py-3">
                 <div class="col-12">
                     <h2>Editor</h2>
@@ -337,12 +361,14 @@
                     </ZoomBox>
                 </div>
                 <div class="col-auto py-3" v-for="(_, index) in remainingCards" :key="index">
-                    <div v-if="index === 0" class="unmatched-card blank" @click="add" style="cursor: pointer;">
-                        <i class="fas fa-plus-circle"></i>
-                    </div>
-                    <div v-else class="unmatched-card blank">
-                        {{index + fullDeck.length + 1}}
-                    </div>
+                    <ZoomBox :zoomFactor="zoom">
+                      <div v-if="index === 0" class="unmatched-card blank" @click="add" style="cursor: pointer;">
+                          <i class="fas fa-plus-circle"></i>
+                      </div>
+                      <div v-else class="unmatched-card blank">
+                          {{index + fullDeck.length + 1}}
+                      </div>
+                    </ZoomBox>
                 </div>
             </div>
             <div class="row py-5">
