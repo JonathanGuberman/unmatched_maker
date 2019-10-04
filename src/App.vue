@@ -91,123 +91,12 @@
                             </p>
                         </div>
                         <div class="col">
-                            <textarea readonly onclick="this.focus();this.select()" style="width: 100%; height:100px; font-family: monospace;">{
-  "name": "",
-  "appearance": {
-    "isPNP": false,
-    "borderColour": "#d0efc6",
-    "highlightColour": "#ff3a93",
-    "patternName": "Dominos"
-  },
-  "hero": {
-    "name": "Hero",
-    "isRanged": false,
-    "hp": 15,
-    "move": 2,
-    "specialAbility": "This is a demo deck meant to show some of the capabilities of the generator and familiarise you with how it works.\nTry changing the Hero and Sidekick's names and properties!\n"
-  },
-  "sidekick": {
-    "name": "sidekick",
-    "isRanged": true,
-    "hp": 6,
-    "quantity": 1,
-    "quote": "I work best alone"
-  },
-  "cards": [
-    {
-      "title": "Your first card",
-      "type": "scheme",
-      "characterName": "ANY",
-      "value": 2,
-      "boost": 4,
-      "basicText": "Try changing the quantity of this card by hovering over the number in the lower right corner and clicking the \"increase\" button.",
-      "immediateText": "",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Did it work?",
-      "type": "defence",
-      "characterName": "SUCCESS",
-      "value": 2,
-      "boost": 3,
-      "basicText": "",
-      "immediateText": "",
-      "duringText": "",
-      "afterText": "There should now be two copies of YOUR FIRST CARD. Try modifying either one: both copies will change!",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Changing types",
-      "type": "versatile",
-      "characterName": "Any",
-      "value": 3,
-      "boost": 2,
-      "basicText": "",
-      "immediateText": "Clicking on the icon in the top left will change the card type.",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "The wrath of vul-kar",
-      "type": "attack",
-      "characterName": "VUL-KAR",
-      "value": 4,
-      "boost": 1,
-      "basicText": "",
-      "immediateText": "Here's an example of a card with an image.",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "https://restorationgames.com/wp-content/uploads/2018/09/FireballIsland-BoxTopcontents-1.jpg",
-      "quantity": 1
-    },
-    {
-      "title": "no boost",
-      "type": "defence",
-      "characterName": "ANY",
-      "value": 2,
-      "boost": 0,
-      "basicText": "",
-      "immediateText": "Notice that this card doesn't show a bosot value, because it's zero",
-      "duringText": "Hover over the card to see and edit the bost value",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Auto-resizing text",
-      "type": "scheme",
-      "characterName": "SQUISHED NAME",
-      "value": 2,
-      "boost": 1,
-      "basicText": "Try typing a long name in the upper left corner, or for the Hero and Sidekick names on the character card. The text and area should resize as needed.",
-      "immediateText": "",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Deleting a card\n",
-      "type": "attack",
-      "characterName": "Any",
-      "value": 5,
-      "boost": 2,
-      "basicText": "",
-      "immediateText": "This has 3 copies.",
-      "duringText": "Delete using the X in the upper right.",
-      "afterText": "All copies will be gone.",
-      "imageUrl": "",
-      "quantity": 3
-    }
-  ]
-}
-                            </textarea>
+                            <textarea
+                              readonly
+                              onclick="this.focus();this.select()"
+                              style="width: 100%;
+                              height:100px; font-family: monospace;"
+                            >{{exampleDeckJSON}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -385,14 +274,40 @@
                             </p>
                         </div>
                         <div class="col">
-                            <textarea
-                                :value="userDeck"
-                                @input="parseDeck($event.target.value)"
-                                style="width: 100%; height: 250px; font-family: monospace;"
-                                onclick="this.focus();"
-                                :class="{'border-danger user-input-invalid': !isValid}"
-                            >
-                            </textarea>
+                          <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                              <a href="#" class="nav-link" :class="{'active': !isJSON}" @click.prevent="isJSON=false">
+                                Human
+                              </a>
+                            </li>
+                            <li class="nav-item">
+                              <a href="#" class="nav-link" :class="{'active': isJSON}" @click.prevent="isJSON=true">
+                                JSON
+                              </a>
+                            </li>
+                          </ul>
+                          <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade" :class="{'show active': !isJSON}">
+                              <textarea
+                                  :value="humanReadableDeck"
+                                  @input="parseHumanDeck($event.target.value)"
+                                  style="width: 100%; height: 250px; font-family: monospace;"
+                                  onclick="this.focus();"
+                                  :class="{'border-danger user-input-invalid': !isValid}"
+                              >
+                              </textarea>
+                            </div>
+                            <div class="tab-pane fade" :class="{'show active': isJSON}">
+                              <textarea
+                                  :value="userDeck"
+                                  @input="parseJSONDeck($event.target.value)"
+                                  style="width: 100%; height: 250px; font-family: monospace;"
+                                  onclick="this.focus();"
+                                  :class="{'border-danger user-input-invalid': !isValid}"
+                              >
+                              </textarea>
+                            </div>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -462,6 +377,13 @@ import UnmatchedCharacterCard from '@/components/UnmatchedCharacterCard.vue'
 import ZoomBox from '@/components/ZoomBox.vue'
 import SvgBackgroundPicker from '@/components/SvgBackgroundPicker'
 
+import exampleDeck from '@/mixins/exampleDeck.js'
+
+import serializeToHuman from '@/parser/serializer.js'
+
+const nearley = require('nearley')
+import grammar from '@/parser/unmatchedParser.js'
+
 export default {
     name: 'app',
     components: {
@@ -470,6 +392,7 @@ export default {
         ZoomBox,
         SvgBackgroundPicker
     },
+    mixins: [exampleDeck],
     data: function () {
         return {
             deck: {
@@ -497,10 +420,12 @@ export default {
                 cards: [],
             },
             userDeck: '',
+            humanReadableDeck: '',
             isValid: true,
             isPrint: false,
             zoom: 1,
             pattern: 'none',
+            isJSON: false,
         }
     },
     computed: {
@@ -537,6 +462,7 @@ export default {
         'deck': {
             handler: function() {
                 this.userDeck = JSON.stringify(this.deck, null, 2);
+                this.humanReadableDeck = serializeToHuman(this.deck);
                 this.localStorageSave();
             },
             deep: true
@@ -593,13 +519,39 @@ export default {
                     quantity: 1,
                 })
         },
-        parseDeck: function(value) {
+        parseJSONDeck: function(value) {
             this.userDeck = value;
             try {
                 this.deck = JSON.parse(value);
                 this.isValid = true;
             } catch {
                 this.isValid = false;
+            }
+        },
+        parseHumanDeck: function(value) {
+            const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+            this.humanReadableDeck = value;
+            try {
+              parser.feed(this.humanReadableDeck);
+              const parsedDeck = parser.results[0]
+              Object.assign(this.deck.hero, parsedDeck.hero);
+              Object.assign(this.deck.sidekick, parsedDeck.sidekick);
+              Object.assign(this.deck.cards, parsedDeck.cards);
+              try {
+                const appearance = JSON.parse(parsedDeck.metadata);
+                console.debug(appearance);
+                Object.assign(this.deck.appearance, appearance);
+              } catch (err) {
+                console.debug(err);
+              }
+              this.deck.cards = [];
+              parsedDeck.cards.forEach((card, index) => {
+                  this.$set(this.deck.cards, index, card);
+              })
+              this.isValid = true;
+            } catch (err) {
+              console.debug(err);
+              this.isValid = false;
             }
         },
         localStorageSave: function() {
