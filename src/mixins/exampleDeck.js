@@ -1,12 +1,16 @@
+import serializeToHuman from '@/parser/serializer.js'
+
+
 export default {
     data: function () {
         return {
-            exampleDeckJSON
+            exampleDeckJSON: JSON.stringify(exampleDeck, null, 2),
+            exampleDeckHuman: serializeToHuman(exampleDeck),
         }
     }
 }
 
-const exampleDeckJSON = JSON.stringify({
+const exampleDeck = {
   "name": "",
   "appearance": {
     "isPNP": false,
@@ -15,14 +19,14 @@ const exampleDeckJSON = JSON.stringify({
     "patternName": "Dominos"
   },
   "hero": {
-    "name": "Hero",
+    "name": "Example",
     "isRanged": false,
     "hp": 15,
     "move": 2,
     "specialAbility": "This is a demo deck meant to show some of the capabilities of the generator and familiarise you with how it works.\nTry changing the Hero and Sidekick's names and properties!"
   },
   "sidekick": {
-    "name": "sidekick",
+    "name": "Demo",
     "isRanged": true,
     "hp": 6,
     "quantity": 1,
@@ -121,4 +125,4 @@ const exampleDeckJSON = JSON.stringify({
       "quantity": 3
     }
   ]
-}, null, 2);
+};

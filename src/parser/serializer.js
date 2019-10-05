@@ -3,7 +3,7 @@ export default function serializeToHuman(deck) {
 ${deck.hero.name.trim()}
 ${deck.hero.isRanged ? 'Ranged': 'Melee'}
 HP: ${deck.hero.hp} Move: ${deck.hero.move}
-"${deck.hero.specialAbility.trim()}"`.trim();
+"${deck.hero.specialAbility.trim().replace(/"/g, '\\"')}"`.trim();
 
     var sidekickOutput = ``;
     if (deck.sidekick.quantity === 1) {
@@ -34,17 +34,17 @@ ${deck.sidekick.isRanged ? 'Ranged': 'Melee'}`
 
         if (card.type === 'scheme') {
             cardOutput += `S B${card.boost}\n`
-            cardOutput += `"${card.basicText.trim()}"\n`
+            cardOutput += `"${card.basicText.trim().replace(/"/g, '\\"')}"\n`
         } else {
             cardOutput += `${card.type[0].toUpperCase()}${card.value} B${card.boost}\n`
             if (card.immediateText) {
-                cardOutput += `IMMEDIATELY: "${card.immediateText.trim()}"\n`
+                cardOutput += `IMMEDIATELY: "${card.immediateText.trim().replace(/"/g, '\\"')}"\n`
             }
             if (card.duringText) {
-                cardOutput += `DURING COMBAT: "${card.duringText.trim()}"\n`
+                cardOutput += `DURING COMBAT: "${card.duringText.trim().replace(/"/g, '\\"')}"\n`
             }
             if (card.afterText) {
-                cardOutput += `AFTER COMBAT: "${card.afterText.trim()}"\n`
+                cardOutput += `AFTER COMBAT: "${card.afterText.trim().replace(/"/g, '\\"')}"\n`
             }
         }
 
@@ -55,7 +55,7 @@ ${deck.sidekick.isRanged ? 'Ranged': 'Melee'}`
         cardsOutput += cardOutput.trimEnd()
     });
 
-    const appearance = `\n\n*${JSON.stringify(deck.appearance)}*`;
+    const appearance = `\n\n*${JSON.stringify({appearance: deck.appearance}).trim()}*`;
 
     return `${heroOutput}${sidekickOutput}${cardsOutput}${appearance}`.trim()
 }

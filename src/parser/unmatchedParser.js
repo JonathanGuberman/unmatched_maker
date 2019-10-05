@@ -18,7 +18,7 @@ var grammar = {
     {"name": "CHARACTER", "symbols": ["HERO", "CHARACTER$ebnf$1"], "postprocess":  d => {
         return {
             hero: d[0],
-            sidekick: d[1]
+            sidekick: d[1] || {quantity: 0}
         }}},
     {"name": "APPEARANCE$ebnf$1", "symbols": []},
     {"name": "APPEARANCE$ebnf$1", "symbols": ["APPEARANCE$ebnf$1", /[^*]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
@@ -142,7 +142,7 @@ var grammar = {
     {"name": "IMAGE$subexpression$1", "symbols": ["IMAGE$subexpression$1$subexpression$1"]},
     {"name": "IMAGE", "symbols": ["nl", "IMAGE$subexpression$1", "str"], "postprocess": d => {return {imageUrl: d[d.length-1]}}},
     {"name": "dq_multiline_str$ebnf$1", "symbols": []},
-    {"name": "dq_multiline_str$ebnf$1", "symbols": ["dq_multiline_str$ebnf$1", /[^"]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "dq_multiline_str$ebnf$1", "symbols": ["dq_multiline_str$ebnf$1", "dstrchar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "dq_multiline_str", "symbols": [{"literal":"\""}, "dq_multiline_str$ebnf$1", {"literal":"\""}], "postprocess": d =>  d[1].join("")},
     {"name": "str$ebnf$1", "symbols": [/[^\n]/]},
     {"name": "str$ebnf$1", "symbols": ["str$ebnf$1", /[^\n]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
@@ -161,13 +161,25 @@ var grammar = {
     {"name": "__$ebnf$1", "symbols": ["wschar"]},
     {"name": "__$ebnf$1", "symbols": ["__$ebnf$1", "wschar"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "__", "symbols": ["__$ebnf$1"], "postprocess": function(d) {return null;}},
-    {"name": "wschar", "symbols": [/[ \t\n\v\f]/], "postprocess": id}
+    {"name": "wschar", "symbols": [/[ \t\n\v\f]/], "postprocess": id},
+    {"name": "dstrchar", "symbols": [/[^\\"]/], "postprocess": id},
+    {"name": "dstrchar", "symbols": [{"literal":"\\"}, "strescape"], "postprocess":
+        function(d) {
+            return JSON.parse("\""+d.join("")+"\"");
+        }
+        },
+    {"name": "strescape", "symbols": [/["\\\/bfnrt]/], "postprocess": id},
+    {"name": "strescape", "symbols": [{"literal":"u"}, /[a-fA-F0-9]/, /[a-fA-F0-9]/, /[a-fA-F0-9]/, /[a-fA-F0-9]/], "postprocess":
+        function(d) {
+            return d.join("");
+        }
+        }
 ]
   , ParserStart: "DECK"
-};
+}
 // if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
 //    module.exports = grammar;
 // } else {
 //    window.grammar = grammar;
 // }
-return grammar})();
+ return grammar})();

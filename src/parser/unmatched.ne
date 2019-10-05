@@ -4,7 +4,7 @@ DECK -> CHARACTER (blank CARDLIST {% d => d[1] %}):?  (blank APPEARANCE {% d => 
 CHARACTER -> HERO (nl SIDEKICK {% d => d[1] %}):? {% d => {
     return {
         hero: d[0],
-        sidekick: d[1]
+        sidekick: d[1] || {quantity: 0}
     }}%}
 
 # The APPEARANCE rule just matches anything between * characters at the end
@@ -76,7 +76,7 @@ AFTER_COMBAT -> nl ("A:"i | "AFTER COMBAT:"i) _ dq_multiline_str {% d => d[d.len
 IMAGE -> nl ("URL:"i) str {% d => {return {imageUrl: d[d.length-1]}} %}
 
 
-dq_multiline_str -> "\"" [^"]:* "\""  {% d =>  d[1].join("") %}
+dq_multiline_str -> "\"" dstrchar:* "\""  {% d =>  d[1].join("") %}
 str -> [^\n]:+ {% function(d) {return d[0].join('')} %}
 int -> [0-9]:+ {% (d) => parseInt(d[0].join(''))  %}
 blank -> _ nl _ nl {% d => null %}
@@ -88,3 +88,18 @@ _  -> wschar:* {% function(d) {return null;} %}
 __ -> wschar:+ {% function(d) {return null;} %}
 
 wschar -> [ \t\n\v\f] {% id %}
+
+# Modified to allow newlines
+dstrchar -> [^\\"] {% id %}
+    | "\\" strescape {%
+    function(d) {
+        return JSON.parse("\""+d.join("")+"\"");
+    }
+%}
+
+strescape -> ["\\/bfnrt] {% id %}
+    | "u" [a-fA-F0-9] [a-fA-F0-9] [a-fA-F0-9] [a-fA-F0-9] {%
+    function(d) {
+        return d.join("");
+    }
+%}

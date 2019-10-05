@@ -69,14 +69,22 @@
                     <p>
                         As you work your deck is automatically saved to your browser's local storage;
                         if you return in the same browser on the same computer, your deck should
-                        still be there.
+                        still be there. If you want to make changes without autosaving, uncheck
+                        the "autosave" checkbox at the top of the editor.
                     </p>
                     <p>
                         If you want to make more than one deck or share decks with friends,
                         scroll to the <a href="#deck-definition">Deck definition</a> section.
                         There you can copy and paste the code that defines your deck.
-                        In the future I hope to have a more readable format for sharing, but
-                        for now JSON will have to do.
+                        You can use the handy "Human-readable UnMatched Notation" (HUmN)
+                        or the move universal JSON formats.
+                    </p>
+                    <p>
+                      You can also share you deck using this
+                      <a :href="deckLink">link</a>. The link is to a snapshot
+                      of the current state of your deck, so if you change the deck, you'll
+                      need to share a new link. Using this link will disable autosaving, so
+                      whoever you share it with won't accidentally overwrite their own deck.
                     </p>
                     <div class="row">
                         <div class="col-12">
@@ -91,12 +99,38 @@
                             </p>
                         </div>
                         <div class="col">
-                            <textarea
-                              readonly
-                              onclick="this.focus();this.select()"
-                              style="width: 100%;
-                              height:100px; font-family: monospace;"
-                            >{{exampleDeckJSON}}</textarea>
+                            <ul class="nav nav-tabs" role="tablist">
+                              <li class="nav-item">
+                                <a href="#" class="nav-link" :class="{'active': !isJSON}" @click.prevent="isJSON=false">
+                                  HUmN
+                                </a>
+                              </li>
+                              <li class="nav-item">
+                                <a href="#" class="nav-link" :class="{'active': isJSON}" @click.prevent="isJSON=true">
+                                  JSON
+                                </a>
+                              </li>
+                            </ul>
+                            <div class="tab-content">
+                              <div class="tab-pane fade" :class="{'show active': !isJSON}">
+                                <textarea
+                                  readonly
+                                  onclick="this.focus();this.select()"
+                                  style="width: 100%;
+                                  height:100px; font-family: monospace;"
+                                  :value="exampleDeckHuman"
+                                ></textarea>
+                              </div>
+                              <div class="tab-pane fade" :class="{'show active': isJSON}">
+                                <textarea
+                                  readonly
+                                  onclick="this.focus();this.select()"
+                                  style="width: 100%;
+                                  height:100px; font-family: monospace;"
+                                  :value="exampleDeckJSON"
+                                ></textarea>
+                              </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,6 +163,12 @@
             <div class="row py-3">
                 <div class="col-12">
                     <h2>Editor</h2>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" v-model="autoSave" id="autosave">
+                      <label class="form-check-label" for="autosave">
+                        Automatically save changes
+                      </label>
+                    </div>
                 </div>
                 <div class="col deck-properties">
                     <h3>Appearance</h3>
@@ -268,16 +308,23 @@
                     <div class="row">
                         <div class="col">
                             <p>
-                                This is the code that defines your deck. You can copy and paste this
-                                code to share or save your deck. You can also edit it live (which is
-                                currently a bit buggy, so use at your own risk!)
+                              This is the code that defines your deck. You can copy and paste this
+                              code to share or save your deck. You can also edit it live (which is
+                              currently a bit buggy, so use at your own risk!)
+                            </p>
+                            <p>
+                              You can share your deck using this
+                              <a :href="deckLink">link</a>. The link is to a snapshot
+                              of the current state of your deck, so if you change the deck, you'll
+                              need to share a new link. Using this link will disable autosaving, so
+                              whoever you share it with won't accidentally overwrite their own deck.
                             </p>
                         </div>
                         <div class="col">
                           <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
                               <a href="#" class="nav-link" :class="{'active': !isJSON}" @click.prevent="isJSON=false">
-                                Human
+                                HUmN
                               </a>
                             </li>
                             <li class="nav-item">
@@ -286,11 +333,12 @@
                               </a>
                             </li>
                           </ul>
-                          <div class="tab-content" id="myTabContent">
+                          <div class="tab-content">
                             <div class="tab-pane fade" :class="{'show active': !isJSON}">
                               <textarea
                                   :value="humanReadableDeck"
                                   @input="parseHumanDeck($event.target.value)"
+                                  @keyup.esc="humanReadableDeck = serializeToHuman(deck);"
                                   style="width: 100%; height: 250px; font-family: monospace;"
                                   onclick="this.focus();"
                                   :class="{'border-danger user-input-invalid': !isValid}"
@@ -426,6 +474,7 @@ export default {
             zoom: 1,
             pattern: 'none',
             isJSON: false,
+            autoSave: true,
         }
     },
     computed: {
@@ -456,6 +505,9 @@ export default {
                 '--contrast-colour': this.isDarkText(this.deck.appearance.highlightColour),
                 '--background-pattern': this.pattern,
             }
+        },
+        deckLink: function() {
+          return '/?deck=' + encodeURIComponent(this.humanReadableDeck);
         }
     },
     watch: {
@@ -463,34 +515,24 @@ export default {
             handler: function() {
                 this.userDeck = JSON.stringify(this.deck, null, 2);
                 this.humanReadableDeck = serializeToHuman(this.deck);
-                this.localStorageSave();
+                if (this.autoSave) {
+                  this.localStorageSave();
+                }
             },
             deep: true
         }
     },
     mounted: function() {
-        // window.onbeforeprint = (() => {
-        //     this.isPrint = true;
-        // });
-
-        // window.onafterprint = (() => {
-        //     this.isPrint = false;
-        // });
-
-        // window.matchMedia('print').addListener((mql) => {
-        //   if(mql.matches) {
-        //     this.isPrint = true;
-        //   }
-        // });
-
-        // // window.matchMedia('screen').addListener((mql) => {
-        // //   if(mql.matches) {
-        // //     this.isPrint = false;
-        // //   }
-        // // });
 
         this.$nextTick(() => {
-            if (localStorage.getItem('unmatched-deck')) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlDeck = urlParams.get('deck');
+            if (urlDeck) {
+              this.autoSave = false;
+              const humanDeck = decodeURIComponent(urlDeck);
+              this.parseHumanDeck(humanDeck);
+              return
+            } else if (localStorage.getItem('unmatched-deck')) {
                 const deck = JSON.parse(localStorage.getItem('unmatched-deck'));
                 this.deck.name = deck.name
                 this.deck.appearance = deck.appearance
@@ -534,23 +576,30 @@ export default {
             try {
               parser.feed(this.humanReadableDeck);
               const parsedDeck = parser.results[0]
-              Object.assign(this.deck.hero, parsedDeck.hero);
-              Object.assign(this.deck.sidekick, parsedDeck.sidekick);
-              Object.assign(this.deck.cards, parsedDeck.cards);
               try {
                 const appearance = JSON.parse(parsedDeck.metadata);
-                console.debug(appearance);
-                Object.assign(this.deck.appearance, appearance);
+                if (appearance) {
+                  Object.assign(this.deck, appearance);
+                }
               } catch (err) {
-                console.debug(err);
+                this.isValid = false;
+                return
               }
-              this.deck.cards = [];
-              parsedDeck.cards.forEach((card, index) => {
-                  this.$set(this.deck.cards, index, card);
-              })
+              if (parsedDeck.hero){
+                Object.assign(this.deck.hero, parsedDeck.hero);
+              }
+              if (parsedDeck.sidekick) {
+                Object.assign(this.deck.sidekick, parsedDeck.sidekick);
+              }
+              if (parsedDeck.cards) {
+                this.deck.cards = [];
+                parsedDeck.cards.forEach((card, index) => {
+                    this.$set(this.deck.cards, index, card);
+                })
+              }
+
               this.isValid = true;
             } catch (err) {
-              console.debug(err);
               this.isValid = false;
             }
         },
@@ -582,7 +631,8 @@ export default {
             });
             const L = 0.2126*C[0] + 0.7152*C[1] + 0.0722*C[2];
             return (L > 0.179) ? 'black' : 'white'
-        }
+        },
+        serializeToHuman,
     }
 }
 </script>
