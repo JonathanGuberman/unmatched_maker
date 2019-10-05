@@ -27,3 +27,5 @@ git commit -m 'Build for gh-pages'
 
 #cd -
 git subtree push --prefix dist origin gh-pages
+
+git checkout master
