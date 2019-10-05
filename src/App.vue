@@ -597,7 +597,6 @@ export default {
                     this.$set(this.deck.cards, index, card);
                 })
               }
-
               this.isValid = true;
             } catch (err) {
               this.isValid = false;

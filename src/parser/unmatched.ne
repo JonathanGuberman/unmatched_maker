@@ -1,5 +1,5 @@
 DECK -> CHARACTER (blank CARDLIST {% d => d[1] %}):?  (blank APPEARANCE {% d => d[1] %}):? _
-            {% d=>  {return {...d[0], cards: d[1], metadata: d[2]}} %}
+            {% d=>  {return {...d[0], cards: d[1] || [], metadata: d[2]}} %}
 
 CHARACTER -> HERO (nl SIDEKICK {% d => d[1] %}):? {% d => {
     return {

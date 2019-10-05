@@ -1,6 +1,6 @@
 // Generated automatically by nearley, version 2.19.0
 // http://github.com/Hardmath123/nearley
-export default (function () {
+export default(function () {
 function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
@@ -11,7 +11,7 @@ var grammar = {
     {"name": "DECK$ebnf$2$subexpression$1", "symbols": ["blank", "APPEARANCE"], "postprocess": d => d[1]},
     {"name": "DECK$ebnf$2", "symbols": ["DECK$ebnf$2$subexpression$1"], "postprocess": id},
     {"name": "DECK$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "DECK", "symbols": ["CHARACTER", "DECK$ebnf$1", "DECK$ebnf$2", "_"], "postprocess": d=>  {return {...d[0], cards: d[1], metadata: d[2]}}},
+    {"name": "DECK", "symbols": ["CHARACTER", "DECK$ebnf$1", "DECK$ebnf$2", "_"], "postprocess": d=>  {return {...d[0], cards: d[1] || [], metadata: d[2]}}},
     {"name": "CHARACTER$ebnf$1$subexpression$1", "symbols": ["nl", "SIDEKICK"], "postprocess": d => d[1]},
     {"name": "CHARACTER$ebnf$1", "symbols": ["CHARACTER$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "CHARACTER$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
@@ -177,9 +177,5 @@ var grammar = {
 ]
   , ParserStart: "DECK"
 }
-// if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
-//    module.exports = grammar;
-// } else {
-//    window.grammar = grammar;
-// }
- return grammar})();
+return grammar
+})();
