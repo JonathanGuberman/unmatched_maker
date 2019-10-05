@@ -4,7 +4,7 @@
 set -e
 
 # get latest changes
-git merge master
+git merge master -m "Merge from master"
 
 # build
 npm run build
