@@ -99,38 +99,28 @@
                             </p>
                         </div>
                         <div class="col">
-                            <ul class="nav nav-tabs" role="tablist">
-                              <li class="nav-item">
-                                <a href="#" class="nav-link" :class="{'active': !isJSON}" @click.prevent="isJSON=false">
-                                  HUmN
-                                </a>
-                              </li>
-                              <li class="nav-item">
-                                <a href="#" class="nav-link" :class="{'active': isJSON}" @click.prevent="isJSON=true">
-                                  JSON
-                                </a>
-                              </li>
-                            </ul>
-                            <div class="tab-content">
-                              <div class="tab-pane fade" :class="{'show active': !isJSON}">
-                                <textarea
+                          <b-card no-body>
+                            <b-tabs card v-model="isJSON">
+                              <b-tab title="HUmN">
+                                <b-form-textarea
                                   readonly
                                   onclick="this.focus();this.select()"
                                   style="width: 100%;
                                   height:100px; font-family: monospace;"
                                   :value="exampleDeckHuman"
-                                ></textarea>
-                              </div>
-                              <div class="tab-pane fade" :class="{'show active': isJSON}">
-                                <textarea
+                                ></b-form-textarea>
+                              </b-tab>
+                              <b-tab title="JSON">
+                                <b-form-textarea
                                   readonly
                                   onclick="this.focus();this.select()"
                                   style="width: 100%;
                                   height:100px; font-family: monospace;"
                                   :value="exampleDeckJSON"
-                                ></textarea>
-                              </div>
-                            </div>
+                                ></b-form-textarea>
+                              </b-tab>
+                            </b-tabs>
+                          </b-card>
                         </div>
                     </div>
                 </div>
@@ -321,41 +311,29 @@
                             </p>
                         </div>
                         <div class="col">
-                          <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                              <a href="#" class="nav-link" :class="{'active': !isJSON}" @click.prevent="isJSON=false">
-                                HUmN
-                              </a>
-                            </li>
-                            <li class="nav-item">
-                              <a href="#" class="nav-link" :class="{'active': isJSON}" @click.prevent="isJSON=true">
-                                JSON
-                              </a>
-                            </li>
-                          </ul>
-                          <div class="tab-content">
-                            <div class="tab-pane fade" :class="{'show active': !isJSON}">
-                              <textarea
-                                  :value="humanReadableDeck"
-                                  @input="parseHumanDeck($event.target.value)"
-                                  @keyup.esc="humanReadableDeck = serializeToHuman(deck);"
-                                  style="width: 100%; height: 250px; font-family: monospace;"
-                                  onclick="this.focus();"
-                                  :class="{'border-danger user-input-invalid': !isValid}"
-                              >
-                              </textarea>
-                            </div>
-                            <div class="tab-pane fade" :class="{'show active': isJSON}">
-                              <textarea
-                                  :value="userDeck"
-                                  @input="parseJSONDeck($event.target.value)"
-                                  style="width: 100%; height: 250px; font-family: monospace;"
-                                  onclick="this.focus();"
-                                  :class="{'border-danger user-input-invalid': !isValid}"
-                              >
-                              </textarea>
-                            </div>
-                          </div>
+                          <b-card no-body>
+                            <b-tabs card v-model="isJSON">
+                              <b-tab title="HUmN">
+                                <b-form-textarea
+                                    :value="humanReadableDeck"
+                                    :state="isValid"
+                                    @input="parseHumanDeck"
+                                    @keyup.esc="humanReadableDeck = serializeToHuman(deck);"
+                                    style="width: 100%; height: 250px; font-family: monospace;"
+                                >
+                                </b-form-textarea>
+                              </b-tab>
+                              <b-tab title="JSON">
+                                <b-form-textarea
+                                    :value="userDeck"
+                                    :state="isValid"
+                                    @input="parseJSONDeck"
+                                    style="width: 100%; height: 250px; font-family: monospace;"
+                                >
+                                </b-form-textarea>
+                              </b-tab>
+                            </b-tabs>
+                          </b-card>
                         </div>
                     </div>
                 </div>
@@ -473,7 +451,7 @@ export default {
             isPrint: false,
             zoom: 1,
             pattern: 'none',
-            isJSON: false,
+            isJSON: 0,
             autoSave: true,
         }
     },
@@ -760,10 +738,6 @@ export default {
 
     .appearance .card {
         cursor: pointer;
-    }
-
-    .user-input-invalid {
-        border-width: 3px;
     }
 
     .border-danger {
