@@ -123,7 +123,7 @@ var grammar = {
     {"name": "ADV_EFFECTS$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "ADV_EFFECTS$ebnf$3", "symbols": ["AFTER_COMBAT"], "postprocess": id},
     {"name": "ADV_EFFECTS$ebnf$3", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "ADV_EFFECTS", "symbols": ["ADV_EFFECTS$ebnf$1", "ADV_EFFECTS$ebnf$2", "ADV_EFFECTS$ebnf$3"], "postprocess": d => {return {immediatelyText: d[0], duringText: d[1], afterText: d[2]}}},
+    {"name": "ADV_EFFECTS", "symbols": ["ADV_EFFECTS$ebnf$1", "ADV_EFFECTS$ebnf$2", "ADV_EFFECTS$ebnf$3"], "postprocess": d => {return {immediateText: d[0], duringText: d[1], afterText: d[2]}}},
     {"name": "IMMEDIATELY$subexpression$1$subexpression$1", "symbols": [/[iI]/, {"literal":":"}], "postprocess": function(d) {return d.join(""); }},
     {"name": "IMMEDIATELY$subexpression$1", "symbols": ["IMMEDIATELY$subexpression$1$subexpression$1"]},
     {"name": "IMMEDIATELY$subexpression$1$subexpression$2", "symbols": [/[iI]/, /[mM]/, /[mM]/, /[eE]/, /[dD]/, /[iI]/, /[aA]/, /[tT]/, /[eE]/, /[lL]/, /[yY]/, {"literal":":"}], "postprocess": function(d) {return d.join(""); }},
