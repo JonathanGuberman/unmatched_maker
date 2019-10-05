@@ -68,7 +68,7 @@ QUANTITY -> int _ "X"i {% d => {return {quantity: d[0]}}  %}
 BOOST -> "B" delim int {% d => {return {boost: d[2]}} %}
 EFFECT -> dq_multiline_str {% d => {return {basicText: d[0]}} %}
 
-ADV_EFFECTS -> IMMEDIATELY:? DURING_COMBAT:? AFTER_COMBAT:? {% d => {return {immediatelyText: d[0], duringText: d[1], afterText: d[2]}} %}
+ADV_EFFECTS -> IMMEDIATELY:? DURING_COMBAT:? AFTER_COMBAT:? {% d => {return {immediateText: d[0], duringText: d[1], afterText: d[2]}} %}
 IMMEDIATELY -> nl ("I:"i | "IMMEDIATELY:"i) _ dq_multiline_str {% d => d[d.length-1] %}
 DURING_COMBAT -> nl ("D:"i | "DURING COMBAT:"i) _ dq_multiline_str {% d => d[d.length-1] %}
 AFTER_COMBAT -> nl ("A:"i | "AFTER COMBAT:"i) _ dq_multiline_str {% d => d[d.length-1] %}
