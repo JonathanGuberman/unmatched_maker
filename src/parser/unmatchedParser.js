@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Generated automatically by nearley, version 2.19.0
 // http://github.com/Hardmath123/nearley
 export default(function () {
