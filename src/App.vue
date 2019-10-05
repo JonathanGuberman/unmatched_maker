@@ -485,7 +485,7 @@ export default {
             }
         },
         deckLink: function() {
-          return '/?deck=' + encodeURIComponent(this.humanReadableDeck);
+          return '/unmatched_maker/?deck=' + encodeURIComponent(this.humanReadableDeck);
         }
     },
     watch: {
