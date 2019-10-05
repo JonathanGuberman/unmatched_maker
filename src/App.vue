@@ -69,14 +69,22 @@
                     <p>
                         As you work your deck is automatically saved to your browser's local storage;
                         if you return in the same browser on the same computer, your deck should
-                        still be there.
+                        still be there. If you want to make changes without autosaving, uncheck
+                        the "autosave" checkbox at the top of the editor.
                     </p>
                     <p>
                         If you want to make more than one deck or share decks with friends,
                         scroll to the <a href="#deck-definition">Deck definition</a> section.
                         There you can copy and paste the code that defines your deck.
-                        In the future I hope to have a more readable format for sharing, but
-                        for now JSON will have to do.
+                        You can use the handy "Human-readable UnMatched Notation" (HUmN)
+                        or the move universal JSON formats.
+                    </p>
+                    <p>
+                      You can also share you deck using this
+                      <a :href="deckLink">link</a>. The link is to a snapshot
+                      of the current state of your deck, so if you change the deck, you'll
+                      need to share a new link. Using this link will disable autosaving, so
+                      whoever you share it with won't accidentally overwrite their own deck.
                     </p>
                     <div class="row">
                         <div class="col-12">
@@ -91,123 +99,28 @@
                             </p>
                         </div>
                         <div class="col">
-                            <textarea readonly onclick="this.focus();this.select()" style="width: 100%; height:100px; font-family: monospace;">{
-  "name": "",
-  "appearance": {
-    "isPNP": false,
-    "borderColour": "#d0efc6",
-    "highlightColour": "#ff3a93",
-    "patternName": "Dominos"
-  },
-  "hero": {
-    "name": "Hero",
-    "isRanged": false,
-    "hp": 15,
-    "move": 2,
-    "specialAbility": "This is a demo deck meant to show some of the capabilities of the generator and familiarise you with how it works.\nTry changing the Hero and Sidekick's names and properties!\n"
-  },
-  "sidekick": {
-    "name": "sidekick",
-    "isRanged": true,
-    "hp": 6,
-    "quantity": 1,
-    "quote": "I work best alone"
-  },
-  "cards": [
-    {
-      "title": "Your first card",
-      "type": "scheme",
-      "characterName": "ANY",
-      "value": 2,
-      "boost": 4,
-      "basicText": "Try changing the quantity of this card by hovering over the number in the lower right corner and clicking the \"increase\" button.",
-      "immediateText": "",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Did it work?",
-      "type": "defence",
-      "characterName": "SUCCESS",
-      "value": 2,
-      "boost": 3,
-      "basicText": "",
-      "immediateText": "",
-      "duringText": "",
-      "afterText": "There should now be two copies of YOUR FIRST CARD. Try modifying either one: both copies will change!",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Changing types",
-      "type": "versatile",
-      "characterName": "Any",
-      "value": 3,
-      "boost": 2,
-      "basicText": "",
-      "immediateText": "Clicking on the icon in the top left will change the card type.",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "The wrath of vul-kar",
-      "type": "attack",
-      "characterName": "VUL-KAR",
-      "value": 4,
-      "boost": 1,
-      "basicText": "",
-      "immediateText": "Here's an example of a card with an image.",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "https://restorationgames.com/wp-content/uploads/2018/09/FireballIsland-BoxTopcontents-1.jpg",
-      "quantity": 1
-    },
-    {
-      "title": "no boost",
-      "type": "defence",
-      "characterName": "ANY",
-      "value": 2,
-      "boost": 0,
-      "basicText": "",
-      "immediateText": "Notice that this card doesn't show a bosot value, because it's zero",
-      "duringText": "Hover over the card to see and edit the bost value",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Auto-resizing text",
-      "type": "scheme",
-      "characterName": "SQUISHED NAME",
-      "value": 2,
-      "boost": 1,
-      "basicText": "Try typing a long name in the upper left corner, or for the Hero and Sidekick names on the character card. The text and area should resize as needed.",
-      "immediateText": "",
-      "duringText": "",
-      "afterText": "",
-      "imageUrl": "",
-      "quantity": 1
-    },
-    {
-      "title": "Deleting a card\n",
-      "type": "attack",
-      "characterName": "Any",
-      "value": 5,
-      "boost": 2,
-      "basicText": "",
-      "immediateText": "This has 3 copies.",
-      "duringText": "Delete using the X in the upper right.",
-      "afterText": "All copies will be gone.",
-      "imageUrl": "",
-      "quantity": 3
-    }
-  ]
-}
-                            </textarea>
+                          <b-card no-body>
+                            <b-tabs card v-model="isJSON">
+                              <b-tab title="HUmN">
+                                <b-form-textarea
+                                  readonly
+                                  onclick="this.focus();this.select()"
+                                  style="width: 100%;
+                                  height:100px; font-family: monospace;"
+                                  :value="exampleDeckHuman"
+                                ></b-form-textarea>
+                              </b-tab>
+                              <b-tab title="JSON">
+                                <b-form-textarea
+                                  readonly
+                                  onclick="this.focus();this.select()"
+                                  style="width: 100%;
+                                  height:100px; font-family: monospace;"
+                                  :value="exampleDeckJSON"
+                                ></b-form-textarea>
+                              </b-tab>
+                            </b-tabs>
+                          </b-card>
                         </div>
                     </div>
                 </div>
@@ -240,6 +153,12 @@
             <div class="row py-3">
                 <div class="col-12">
                     <h2>Editor</h2>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" v-model="autoSave" id="autosave">
+                      <label class="form-check-label" for="autosave">
+                        Automatically save changes
+                      </label>
+                    </div>
                 </div>
                 <div class="col deck-properties">
                     <h3>Appearance</h3>
@@ -379,20 +298,42 @@
                     <div class="row">
                         <div class="col">
                             <p>
-                                This is the code that defines your deck. You can copy and paste this
-                                code to share or save your deck. You can also edit it live (which is
-                                currently a bit buggy, so use at your own risk!)
+                              This is the code that defines your deck. You can copy and paste this
+                              code to share or save your deck. You can also edit it live (which is
+                              currently a bit buggy, so use at your own risk!)
+                            </p>
+                            <p>
+                              You can share your deck using this
+                              <a :href="deckLink">link</a>. The link is to a snapshot
+                              of the current state of your deck, so if you change the deck, you'll
+                              need to share a new link. Using this link will disable autosaving, so
+                              whoever you share it with won't accidentally overwrite their own deck.
                             </p>
                         </div>
                         <div class="col">
-                            <textarea
-                                :value="userDeck"
-                                @input="parseDeck($event.target.value)"
-                                style="width: 100%; height: 250px; font-family: monospace;"
-                                onclick="this.focus();"
-                                :class="{'border-danger user-input-invalid': !isValid}"
-                            >
-                            </textarea>
+                          <b-card no-body>
+                            <b-tabs card v-model="isJSON">
+                              <b-tab title="HUmN">
+                                <b-form-textarea
+                                    :value="humanReadableDeck"
+                                    :state="isValid"
+                                    @input="parseHumanDeck"
+                                    @keyup.esc="humanReadableDeck = serializeToHuman(deck);"
+                                    style="width: 100%; height: 250px; font-family: monospace;"
+                                >
+                                </b-form-textarea>
+                              </b-tab>
+                              <b-tab title="JSON">
+                                <b-form-textarea
+                                    :value="userDeck"
+                                    :state="isValid"
+                                    @input="parseJSONDeck"
+                                    style="width: 100%; height: 250px; font-family: monospace;"
+                                >
+                                </b-form-textarea>
+                              </b-tab>
+                            </b-tabs>
+                          </b-card>
                         </div>
                     </div>
                 </div>
@@ -462,6 +403,13 @@ import UnmatchedCharacterCard from '@/components/UnmatchedCharacterCard.vue'
 import ZoomBox from '@/components/ZoomBox.vue'
 import SvgBackgroundPicker from '@/components/SvgBackgroundPicker'
 
+import exampleDeck from '@/mixins/exampleDeck.js'
+
+import serializeToHuman from '@/parser/serializer.js'
+
+const nearley = require('nearley')
+import grammar from '@/parser/unmatchedParser.js'
+
 export default {
     name: 'app',
     components: {
@@ -470,6 +418,7 @@ export default {
         ZoomBox,
         SvgBackgroundPicker
     },
+    mixins: [exampleDeck],
     data: function () {
         return {
             deck: {
@@ -497,10 +446,13 @@ export default {
                 cards: [],
             },
             userDeck: '',
+            humanReadableDeck: '',
             isValid: true,
             isPrint: false,
             zoom: 1,
             pattern: 'none',
+            isJSON: 0,
+            autoSave: true,
         }
     },
     computed: {
@@ -531,40 +483,34 @@ export default {
                 '--contrast-colour': this.isDarkText(this.deck.appearance.highlightColour),
                 '--background-pattern': this.pattern,
             }
+        },
+        deckLink: function() {
+          return '/?deck=' + encodeURIComponent(this.humanReadableDeck);
         }
     },
     watch: {
         'deck': {
             handler: function() {
                 this.userDeck = JSON.stringify(this.deck, null, 2);
-                this.localStorageSave();
+                this.humanReadableDeck = serializeToHuman(this.deck);
+                if (this.autoSave) {
+                  this.localStorageSave();
+                }
             },
             deep: true
         }
     },
     mounted: function() {
-        // window.onbeforeprint = (() => {
-        //     this.isPrint = true;
-        // });
-
-        // window.onafterprint = (() => {
-        //     this.isPrint = false;
-        // });
-
-        // window.matchMedia('print').addListener((mql) => {
-        //   if(mql.matches) {
-        //     this.isPrint = true;
-        //   }
-        // });
-
-        // // window.matchMedia('screen').addListener((mql) => {
-        // //   if(mql.matches) {
-        // //     this.isPrint = false;
-        // //   }
-        // // });
 
         this.$nextTick(() => {
-            if (localStorage.getItem('unmatched-deck')) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlDeck = urlParams.get('deck');
+            if (urlDeck) {
+              this.autoSave = false;
+              const humanDeck = decodeURIComponent(urlDeck);
+              this.parseHumanDeck(humanDeck);
+              return
+            } else if (localStorage.getItem('unmatched-deck')) {
                 const deck = JSON.parse(localStorage.getItem('unmatched-deck'));
                 this.deck.name = deck.name
                 this.deck.appearance = deck.appearance
@@ -593,13 +539,45 @@ export default {
                     quantity: 1,
                 })
         },
-        parseDeck: function(value) {
+        parseJSONDeck: function(value) {
             this.userDeck = value;
             try {
                 this.deck = JSON.parse(value);
                 this.isValid = true;
             } catch {
                 this.isValid = false;
+            }
+        },
+        parseHumanDeck: function(value) {
+            const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+            this.humanReadableDeck = value;
+            try {
+              parser.feed(this.humanReadableDeck);
+              const parsedDeck = parser.results[0]
+              try {
+                const appearance = JSON.parse(parsedDeck.metadata);
+                if (appearance) {
+                  Object.assign(this.deck, appearance);
+                }
+              } catch (err) {
+                this.isValid = false;
+                return
+              }
+              if (parsedDeck.hero){
+                Object.assign(this.deck.hero, parsedDeck.hero);
+              }
+              if (parsedDeck.sidekick) {
+                Object.assign(this.deck.sidekick, parsedDeck.sidekick);
+              }
+              if (parsedDeck.cards) {
+                this.deck.cards = [];
+                parsedDeck.cards.forEach((card, index) => {
+                    this.$set(this.deck.cards, index, card);
+                })
+              }
+              this.isValid = true;
+            } catch (err) {
+              this.isValid = false;
             }
         },
         localStorageSave: function() {
@@ -630,7 +608,8 @@ export default {
             });
             const L = 0.2126*C[0] + 0.7152*C[1] + 0.0722*C[2];
             return (L > 0.179) ? 'black' : 'white'
-        }
+        },
+        serializeToHuman,
     }
 }
 </script>
@@ -759,10 +738,6 @@ export default {
 
     .appearance .card {
         cursor: pointer;
-    }
-
-    .user-input-invalid {
-        border-width: 3px;
     }
 
     .border-danger {
