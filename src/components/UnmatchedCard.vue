@@ -632,7 +632,7 @@ export default {
     display: flex;
     flex-direction: column;
     position: relative;
-    height: 28.8mm;
+    min-height: 28.8mm;
 
     // overflow: hidden;
     border-top: @border-width solid var(--inner-border-colour);
@@ -660,6 +660,7 @@ export default {
         overflow: scroll;
         scrollbar-width: none;
         &::-webkit-scrollbar { display: none; };
+        padding-bottom: 2.5mm;
 
         .empty {
             display: none;
