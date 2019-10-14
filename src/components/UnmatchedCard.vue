@@ -90,6 +90,13 @@
                     >
                     </div>
                     <div v-else>
+                        <div :class="{'empty': !basicText}"
+                            v-text="basicText"
+                            :contenteditable="isEditable"
+                            @blur="updateEditableText('basicText', $event)"
+                            style="min-height: 100%; white-space: pre-wrap;"
+                        >
+                        </div>
                         <div :class="{'empty': !immediateText}" @click="focusEditableText">
                             <strong>Immediately:</strong>
                             <span
