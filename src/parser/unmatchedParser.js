@@ -1,7 +1,8 @@
 /* eslint-disable */
+
 // Generated automatically by nearley, version 2.19.0
 // http://github.com/Hardmath123/nearley
-export default(function () {
+export default (function () {
 function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
@@ -117,13 +118,15 @@ var grammar = {
     {"name": "QUANTITY", "symbols": ["QUANTITY$subexpression$2", "_", "int"], "postprocess": d => {return {quantity: d[2]}}},
     {"name": "BOOST", "symbols": [{"literal":"B"}, "delim", "int"], "postprocess": d => {return {boost: d[2]}}},
     {"name": "EFFECT", "symbols": ["dq_multiline_str"], "postprocess": d => {return {basicText: d[0]}}},
-    {"name": "ADV_EFFECTS$ebnf$1", "symbols": ["IMMEDIATELY"], "postprocess": id},
+    {"name": "ADV_EFFECTS$ebnf$1", "symbols": ["dq_multiline_str"], "postprocess": id},
     {"name": "ADV_EFFECTS$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "ADV_EFFECTS$ebnf$2", "symbols": ["DURING_COMBAT"], "postprocess": id},
+    {"name": "ADV_EFFECTS$ebnf$2", "symbols": ["IMMEDIATELY"], "postprocess": id},
     {"name": "ADV_EFFECTS$ebnf$2", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "ADV_EFFECTS$ebnf$3", "symbols": ["AFTER_COMBAT"], "postprocess": id},
+    {"name": "ADV_EFFECTS$ebnf$3", "symbols": ["DURING_COMBAT"], "postprocess": id},
     {"name": "ADV_EFFECTS$ebnf$3", "symbols": [], "postprocess": function(d) {return null;}},
-    {"name": "ADV_EFFECTS", "symbols": ["ADV_EFFECTS$ebnf$1", "ADV_EFFECTS$ebnf$2", "ADV_EFFECTS$ebnf$3"], "postprocess": d => {return {immediateText: d[0], duringText: d[1], afterText: d[2]}}},
+    {"name": "ADV_EFFECTS$ebnf$4", "symbols": ["AFTER_COMBAT"], "postprocess": id},
+    {"name": "ADV_EFFECTS$ebnf$4", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "ADV_EFFECTS", "symbols": ["ADV_EFFECTS$ebnf$1", "ADV_EFFECTS$ebnf$2", "ADV_EFFECTS$ebnf$3", "ADV_EFFECTS$ebnf$4"], "postprocess": d => {return {basicText: d[0], immediateText: d[1], duringText: d[2], afterText: d[3]}}},
     {"name": "IMMEDIATELY$subexpression$1$subexpression$1", "symbols": [/[iI]/, {"literal":":"}], "postprocess": function(d) {return d.join(""); }},
     {"name": "IMMEDIATELY$subexpression$1", "symbols": ["IMMEDIATELY$subexpression$1$subexpression$1"]},
     {"name": "IMMEDIATELY$subexpression$1$subexpression$2", "symbols": [/[iI]/, /[mM]/, /[mM]/, /[eE]/, /[dD]/, /[iI]/, /[aA]/, /[tT]/, /[eE]/, /[lL]/, /[yY]/, {"literal":":"}], "postprocess": function(d) {return d.join(""); }},
@@ -178,5 +181,9 @@ var grammar = {
 ]
   , ParserStart: "DECK"
 }
-return grammar
-})();
+// if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
+//    module.exports = grammar;
+// } else {
+//    window.grammar = grammar;
+// }
+return grammar})();
