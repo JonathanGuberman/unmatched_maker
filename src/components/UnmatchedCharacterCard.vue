@@ -327,7 +327,7 @@ export default {
             const textToScale = (selector instanceof HTMLElement) ?
                 selector : this.$el.querySelector(selector);
             // const computedStyle = window.getComputedStyle(textToScale);
-            if (!textToScale) {return};
+            if (!textToScale) {return}
             const width = textToScale.offsetWidth;
 
             // Need to check width because for some reason
