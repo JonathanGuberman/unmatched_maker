@@ -63,6 +63,10 @@
                         This is in the "Print" dialogue on Macs and in the "Page Settings"
                         dialogue on Windows.
                     </p>
+                    <p>
+                        You can add card borders and/or crop marks in the "Print settings"
+                        section below.
+                    </p>
                 </div>
                 <div class="col-xl-10">
                     <h2>Saving and sharing</h2>
@@ -159,6 +163,21 @@
                         Automatically save changes
                       </label>
                     </div>
+                </div>
+                <div class="col-12">
+                  <h3>Print settings</h3>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" v-model="hasCropMarks" id="cropmarks">
+                    <label class="form-check-label" for="cropmarks">
+                      Print crop marks (semi-functional)
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" v-model="hasCardBorders" id="cardborders">
+                    <label class="form-check-label" for="cardborders">
+                      Print card borders
+                    </label>
+                  </div>
                 </div>
                 <div class="col deck-properties">
                     <h3>Appearance</h3>
@@ -361,7 +380,9 @@
             </div>
         </div>
 
-        <div class="print">
+        <div class="print"
+          :class="{'crop-marks': hasCropMarks, 'card-borders': hasCardBorders}"
+        >
             <UnmatchedCharacterCard
                 :heroName="deck.hero.name"
                 :heroIsRanged="deck.hero.isRanged"
@@ -453,6 +474,8 @@ export default {
             pattern: 'none',
             isJSON: 0,
             autoSave: true,
+            hasCardBorders: false,
+            hasCropMarks: true,
         }
     },
     computed: {
@@ -485,7 +508,7 @@ export default {
             }
         },
         deckLink: function() {
-          return '/unmatched_maker/?deck=' + encodeURIComponent(this.humanReadableDeck);
+          return './?deck=' + encodeURIComponent(this.humanReadableDeck);
         }
     },
     watch: {
@@ -687,7 +710,7 @@ export default {
         }
 
         .no-print {
-            display: none !important;
+          display: none !important;
         }
 
         .print {
@@ -700,17 +723,45 @@ export default {
                 page-break-inside: avoid;
             }
         }
+
+        .print.card-borders .unmatched-card {
+            border: 1px solid rgba(0, 0, 0);
+        }
+
+        .print.crop-marks .unmatched-card {
+          &:before, &:after {
+            position: absolute;
+            content: '';
+            border: solid black;
+            z-index: -1;
+          }
+          &:before {
+            top: -32px; bottom: -32px;
+            left: 0; right: 0;
+            border-width: 0 1px;
+          }
+          &:after {
+            left: -32px; right: -32px;
+            top: 0; bottom: 0;
+            border-width: 1px 0;
+          }
+        }
+
+        .print.crop-marks.card-borders .unmatched-card {
+          &:before {
+            left: -1px; right: -1px;
+          }
+          &:after {
+            top: -1px; bottom: -1px;
+          }
+        }
     }
 
     .unmatched-card {
-        line-height: normal;
-        // float: left;
-        // margin: 50px;
-    }
-
-    .unmatched-card {
+        position: relative;
         width: 63mm;
         height: 88mm;
+        line-height: normal;
         background: var(--outer-border-colour);
         padding: 3mm;
         // border: 1px solid rgba(0,0,0,.125);

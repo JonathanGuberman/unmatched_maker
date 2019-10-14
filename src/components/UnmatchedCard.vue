@@ -90,6 +90,13 @@
                     >
                     </div>
                     <div v-else>
+                        <div :class="{'empty': !basicText}"
+                            v-text="basicText"
+                            :contenteditable="isEditable"
+                            @blur="updateEditableText('basicText', $event)"
+                            style="min-height: 100%; white-space: pre-wrap;"
+                        >
+                        </div>
                         <div :class="{'empty': !immediateText}" @click="focusEditableText">
                             <strong>Immediately:</strong>
                             <span
@@ -632,7 +639,7 @@ export default {
     display: flex;
     flex-direction: column;
     position: relative;
-    height: 28.8mm;
+    min-height: 28.8mm;
 
     // overflow: hidden;
     border-top: @border-width solid var(--inner-border-colour);
@@ -660,6 +667,7 @@ export default {
         overflow: scroll;
         scrollbar-width: none;
         &::-webkit-scrollbar { display: none; };
+        padding-bottom: 2.5mm;
 
         .empty {
             display: none;

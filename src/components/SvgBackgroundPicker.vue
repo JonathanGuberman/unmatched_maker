@@ -28,6 +28,8 @@
 </template>
 
 <script type="text/javascript">
+/* eslint-disable */
+
     export default {
         name: 'SvgBackgroundPicker',
         data: function () {

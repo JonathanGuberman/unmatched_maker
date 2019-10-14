@@ -324,19 +324,20 @@ export default {
     },
     methods: {
         scaleText: function(selector) {
-            const heroNameText = (selector instanceof HTMLElement) ?
+            const textToScale = (selector instanceof HTMLElement) ?
                 selector : this.$el.querySelector(selector);
-            // const computedStyle = window.getComputedStyle(heroNameText);
-            const width = heroNameText.offsetWidth;
+            // const computedStyle = window.getComputedStyle(textToScale);
+            if (!textToScale) {return}
+            const width = textToScale.offsetWidth;
 
             // Need to check width because for some reason
             // this gets fired twice, once with the width=0,
             // which would reset the scale to (1) every time
             if (width){
-                heroNameText.style['transform'] = 'scaleX(1)';
+                textToScale.style['transform'] = 'scaleX(1)';
                 if (width > this.initialWidth) {
-                    heroNameText.style['transform'] =`scaleX(${this.initialWidth/width})`;
-                    heroNameText.style['transform-origin'] = 'left bottom';
+                    textToScale.style['transform'] =`scaleX(${this.initialWidth/width})`;
+                    textToScale.style['transform-origin'] = 'left bottom';
                 }
             }
         },

@@ -37,6 +37,9 @@ ${deck.sidekick.isRanged ? 'Ranged': 'Melee'}`
             cardOutput += `"${card.basicText.trim().replace(/"/g, '\\"')}"\n`
         } else {
             cardOutput += `${card.type[0].toUpperCase()}${card.value} B${card.boost}\n`
+            if (card.basicText) {
+                cardOutput += `"${card.basicText.trim().replace(/"/g, '\\"')}"\n`
+            }
             if (card.immediateText) {
                 cardOutput += `IMMEDIATELY: "${card.immediateText.trim().replace(/"/g, '\\"')}"\n`
             }
