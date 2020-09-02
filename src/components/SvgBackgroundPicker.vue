@@ -421,7 +421,7 @@
         },
         watch: {
             selectedPattern: {
-                initial: true,
+                immediate: true,
                 handler: function(newValue) {
                     var matchingPattern = this.patterns.find((pattern) => {
                         return pattern.name === newValue

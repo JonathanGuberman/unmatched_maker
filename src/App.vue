@@ -3,6 +3,21 @@
         <div class="no-print container">
             <div class="row py-3 justify-content-center">
                 <div class="col-xl-10">
+                    <b-modal
+                      v-model="modalVisible"
+                      title="Please note"
+                      header-text-variant="danger"
+                      ok-only
+                    >
+                      <template v-slot:modal-title>
+                        <h1>This site is obsolete!</h1>
+                      </template>
+                      <p>
+                        Please try the new <a href="https://unmatched.cards">Unmatched Maker</a>, where you can
+                        create an account, save private versions and publicly publish decks, export directly to
+                        images, and more!
+                      </p>
+                    </b-modal>
                     <h1>Unmatched Maker</h1>
                     <p>
                         <a href="https://restorationgames.com/unmatched/" target="_blank">Unmatched</a>
@@ -442,6 +457,7 @@ export default {
     mixins: [exampleDeck],
     data: function () {
         return {
+            modalVisible: true,
             deck: {
                 name: "",
                 appearance: {
